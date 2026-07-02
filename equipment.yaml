@@ -1,0 +1,50 @@
+# ═══════════════════════════════════════════════════════════════════
+# EQUIPMENT PROFILE — read by every fireworks skill before designing
+# a show. Run /setup to (re)build this interactively.
+# Device technical details live in devices/<slug>.md (see `profile`).
+# ═══════════════════════════════════════════════════════════════════
+
+owner: Vince
+updated: 2026-07-02
+
+firing_system:
+  make: COBRA
+  model: 18R2
+  profile: devices/cobra-18r2.md   # full technical reference
+  controller: 18R2 handheld remote
+  modules:                          # a.k.a. base stations / receivers
+    - name: Station 1
+      model: 18M
+      channel: 1
+      cues: 18
+    - name: Station 2
+      model: 18M
+      channel: 2
+      cues: 18
+  scripting:
+    supported: true
+    format: cobra-csv               # export spec in the device profile
+  audio_sync: manual                # soundtrack played separately; the
+                                    # audio file's timeline IS the show clock
+  igniters: TODO                    # e-match / Talon / consumer clip — confirm via /setup
+
+mortar_racks:
+  reused_yearly: true
+  firing: fused-groups              # tubes fused into groups; one cue fires a group
+  racks: TODO                       # list tube counts / diameters via /setup
+  notes: |
+    2025/2026 group configs seen in past shows: 1x21, 4x4, 3x7 fan (1.75"),
+    1x11, 3x3 fan (5"), 1x9, 3x3 fan (6"). Confirm physical rack inventory.
+
+audio_playback:
+  device: TODO                      # PA / speaker used on show night
+  notes: soundtrack file is the master show clock
+
+site:
+  type: backyard
+  notes: TODO                       # distances, audience position, fallout zone
+
+defaults:
+  show_length_minutes: 10           # target; can run longer
+  overlap_seconds: [10, 20]         # min/max overlap between consecutive cues
+  reserve_for_finale: true          # hold back several mortar groups + biggest cakes

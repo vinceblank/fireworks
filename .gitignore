@@ -1,0 +1,26 @@
+# ── Audio: music files are copyrighted — keep them local, never commit ──
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.aac
+*.ogg
+*.wma
+*.aiff
+*.opus
+
+# Keep audio folders visible in git
+!**/audio/README.md
+!music/README.md
+
+# ── Python (audio analysis tooling) ──
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ── Editor / OS noise ──
+~$*.xlsx
+~$*.docx
+Thumbs.db
+.DS_Store
