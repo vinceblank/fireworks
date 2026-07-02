@@ -17,6 +17,8 @@ system into `devices/` if it isn't already there).
 /design-show  →  choreograph the show from this year's inventory
 /soundtrack   →  design the music mix; the audio file becomes the show clock
 /export-show  →  generate + validate the firing-system script (e.g. Cobra CSV)
+/rehearse     →  virtual rehearsal in the browser: music + rendered fireworks
+                 + live station/cue panels (tools/rehearsal/rehearsal.html)
 /field-setup  →  setup-day wiring tables + ground layout; push to Google Drive
                  so the instructions are on your phone in the field
 ```

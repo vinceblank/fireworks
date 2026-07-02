@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fireworks Show Rehearsal</title>
+<style>
+  :root {
+    --bg: #0a0a12; --panel: #14141f; --edge: #262636; --text: #d8d8e4;
+    --dim: #6a6a80; --green: #3ddc84; --red: #ff5a5a; --gold: #ffd166;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font: 14px/1.4 system-ui, sans-serif;
+         display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  #sky { flex: 1; min-height: 0; display: block; width: 100%; cursor: crosshair; }
+  #hud { position: fixed; top: 10px; left: 12px; right: 12px; display: flex;
+         justify-content: space-between; pointer-events: none; font-variant-numeric: tabular-nums; }
+  #clock { font-size: 28px; font-weight: 700; color: var(--gold); text-shadow: 0 0 8px #000; }
+  #nowplaying { max-width: 55%; text-align: right; text-shadow: 0 0 8px #000; }
+  #nowplaying .t { color: var(--gold); font-weight: 600; }
+  #banner { position: fixed; top: 52px; left: 12px; right: 12px; color: #ffb347;
+            text-shadow: 0 0 6px #000; font-size: 12px; pointer-events: none; }
+  #deck { background: var(--panel); border-top: 1px solid var(--edge); padding: 10px 14px;
+          display: flex; flex-direction: column; gap: 8px; }
+  #transport { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  button, select { background: #1f1f2e; color: var(--text); border: 1px solid var(--edge);
+           border-radius: 6px; padding: 6px 14px; font-size: 14px; cursor: pointer; }
+  button:hover { border-color: var(--gold); }
+  button.primary { background: var(--gold); color: #14141f; font-weight: 700; }
+  label.file { background: #1f1f2e; border: 1px dashed var(--dim); border-radius: 6px;
+               padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--dim); }
+  label.file.loaded { color: var(--green); border-style: solid; }
+  input[type=file] { display: none; }
+  #seek { flex: 1; min-width: 160px; accent-color: var(--gold); }
+  #stations { display: flex; gap: 18px; overflow-x: auto; padding-bottom: 2px; }
+  .station { flex: 0 0 auto; }
+  .station h4 { font-size: 12px; color: var(--dim); margin-bottom: 4px; letter-spacing: .06em; }
+  .cues { display: grid; grid-template-columns: repeat(9, 22px); gap: 4px; }
+  .cue { width: 22px; height: 22px; border-radius: 4px; background: #1c1c2a; color: #555;
+         font-size: 10px; display: flex; align-items: center; justify-content: center;
+         border: 1px solid var(--edge); }
+  .cue.pending { color: #0a0a12; background: var(--green); border-color: var(--green); }
+  .cue.fired   { color: #fff; background: #58202a; border-color: var(--red); }
+  .cue.firing  { color: #14141f; background: #fff; border-color: #fff; box-shadow: 0 0 10px #fff; }
+  #next { font-size: 12px; color: var(--dim); min-height: 16px; }
+  #next b { color: var(--text); }
+  #drop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+          background: rgba(10,10,18,.85); font-size: 22px; color: var(--gold); z-index: 9; }
+  body.dragging #drop { display: flex; }
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div id="hud"><div id="clock">00:00.0</div><div id="nowplaying"></div></div>
+<div id="banner"></div>
+<div id="drop">Drop the script CSV and/or the show MP3 anywhere</div>
+
+<div id="deck">
+  <div id="transport">
+    <label class="file" id="csvLabel">Load script CSV<input type="file" id="csvInput" accept=".csv,text/csv"></label>
+    <label class="file" id="audioLabel">Load show audio<input type="file" id="audioInput" accept="audio/*"></label>
+    <button class="primary" id="playBtn" disabled>▶ Play</button>
+    <button id="resetBtn">⟲ Reset</button>
+    <select id="speed">
+      <option value="0.5">0.5×</option><option value="1" selected>1×</option>
+      <option value="2">2×</option><option value="4">4×</option>
+    </select>
+    <input type="range" id="seek" min="0" max="600" step="0.1" value="0">
+    <span id="dur" style="font-variant-numeric:tabular-nums;color:var(--dim)">--:--</span>
+  </div>
+  <div id="stations"></div>
+  <div id="next">Load a firing-script CSV (e.g. <code>cobra.csv</code>) to begin. Audio optional — without it the rehearsal runs on a silent clock.</div>
+</div>
+
+<script>
+"use strict";
+/* ============================== script parsing ============================== */
+const TIME_RE = /^(?:(\d+):)?(\d+):(\d{2}(?:\.\d+)?)s?$/;
+const BARE_RE = /^\d+(?:\.\d+)?s?$/;
+function parseTime(s) {
+  s = s.trim();
+  let m = TIME_RE.exec(s);
+  if (m) return (m[1] ? +m[1] * 3600 : 0) + (+m[2]) * 60 + parseFloat(m[3]);
+  if (BARE_RE.test(s)) return parseFloat(s);
+  return null;
+}
+function fmtClock(t, tenths = true) {
+  const neg = t < 0; t = Math.abs(t);
+  const m = Math.floor(t / 60), s = t - m * 60;
+  const ss = tenths ? s.toFixed(1).padStart(4, "0") : String(Math.floor(s)).padStart(2, "0");
+  return (neg ? "-" : "") + String(m).padStart(2, "0") + ":" + ss;
+}
+
+/* Infer visual effect from a COBRA event description. */
+const PALETTES = {
+  rwb: ["#ff4040", "#ffffff", "#4d7dff"], gold: ["#ffd166", "#ffb347", "#fff3c0"],
+  neon: ["#39ff14", "#00e5ff", "#ff2ec7", "#ffe600"], rainbow: ["#ff4040","#ff9f1c","#ffe600","#39ff14","#00b4ff","#b14dff"],
+  red: ["#ff4040", "#ff7060"], green: ["#39ff14", "#7dff9a"], blue: ["#4d7dff", "#8fb3ff"],
+  silver: ["#e8e8f4", "#ffffff"], mixed: ["#ffd166","#ff5a8a","#4de1ff","#9dff70","#ffffff","#c69bff"],
+};
+function inferEffect(desc) {
+  const d = desc.toLowerCase();
+  const has = (...ws) => ws.some(w => d.includes(w));
+  let type = "peony";
+  if (has("willow", "brocade", "kamuro")) type = "willow";
+  else if (has("crackle", "crackling")) type = "crackle";
+  else if (has("strobe")) type = "strobe";
+  else if (has("mine", "ground", "fountain", "gerb")) type = "mine";
+  else if (has("salute", "report", "thunder")) type = "salute";
+  else if (has("pearl", "comet", "tail")) type = "comet";
+  else if (has("whistle")) type = "whistle";
+  const fan = has("fan", "fanning", "z-shape", "w shape");
+  const mortar = has("mortar", "shell");
+  let palette = "mixed";
+  if (has("r/w/b", "red/white/blue", "patriotic", "american", "eagle")) palette = "rwb";
+  else if (has("willow", "brocade", "gold", "kamuro")) palette = "gold";
+  else if (has("neon")) palette = "neon";
+  else if (has("rainbow")) palette = "rainbow";
+  else if (has("silver", "white", "strobe")) palette = "silver";
+  else if (has("red")) palette = "red";
+  else if (has("green")) palette = "green";
+  else if (has("blue")) palette = "blue";
+  // "(100 / 0:35)" or "(200g / 24s)" or "21 / 1:36" → shots + duration
+  let shots = mortar ? 9 : 20, dur = 25;
+  const m = /(\d+)\s*(?:g|shot|shots)?\s*\/\s*([0-9:.]+)\s*s?/.exec(d);
+  if (m) {
+    const n = +m[1], t = parseTime(m[2].includes(":") ? m[2] : m[2] + (m[2].includes(".") ? "" : ".0"));
+    if (n >= 1 && n <= 500) shots = Math.min(n, 160);
+    if (t && t > 1 && t < 600) dur = t;
+  }
+  return { type, palette, fan, mortar, shots, dur };
+}
+
+function parseScript(text) {
+  const events = [], warnings = [];
+  let stepBase = null, lastAbs = 0, sawStep = false;
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+    const cols = line.split(",");
+    const first = cols[0].trim();
+    if (first.toLowerCase() === "end") break;
+    if (first.toUpperCase() === "STEP") {
+      // Treat STEP as pressed 3 s after the previous event; times after are relative.
+      stepBase = lastAbs + 3; sawStep = true; continue;
+    }
+    const t = parseTime(first);
+    if (t === null) continue;                 // script header row etc.
+    const ch = (cols[1] || "").trim(), cue = (cols[2] || "").trim();
+    if (!ch || !cue) continue;                // DMX-only / malformed
+    const desc = (cols[3] || "").trim() || `Ch${ch} Cue${cue}`;
+    const abs = stepBase !== null ? stepBase + t : t;
+    lastAbs = Math.max(lastAbs, abs);
+    events.push({ t: abs, ch, cue, desc, fx: inferEffect(desc), fired: false });
+  }
+  if (sawStep) warnings.push("STEP script: STEP presses assumed 3 s after the prior event — real pacing is operator-controlled.");
+  events.sort((a, b) => a.t - b.t);
+  return { events, warnings };
+}
+
+/* ============================== pyro renderer ============================== */
+const sky = document.getElementById("sky"), ctx = sky.getContext("2d");
+let W = 0, H = 0, GROUND = 0;
+function resize() {
+  W = sky.clientWidth; H = sky.clientHeight;
+  sky.width = W * devicePixelRatio; sky.height = H * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  GROUND = H - 24;
+}
+new ResizeObserver(resize).observe(sky); resize();
+
+const particles = [], rockets = [], launchQueue = [];   // launchQueue: {at, x, fx, big}
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+function stationX(ch, channels) {
+  const i = Math.max(channels.indexOf(ch), 0);
+  const n = Math.max(channels.length, 1);
+  return W * (0.5 + (i - (n - 1) / 2) * (0.5 / Math.max(n - 1, 1)));
+}
+
+function scheduleEvent(ev, channels) {
+  const { fx } = ev, sx = stationX(ev.ch, channels);
+  const n = fx.shots, span = Math.max(fx.dur - 2, 0.5);
+  for (let i = 0; i < n; i++) {
+    const frac = n === 1 ? 0 : i / (n - 1);
+    launchQueue.push({
+      at: ev.t + frac * span + rand(-0.08, 0.08),
+      x: sx + (fx.fan ? (frac - 0.5) * W * 0.22 : rand(-30, 30)),
+      angle: fx.fan ? (frac - 0.5) * 0.9 : rand(-0.12, 0.12),
+      fx, big: fx.mortar,
+    });
+  }
+  launchQueue.sort((a, b) => a.at - b.at);
+}
+
+function launch(l) {
+  if (l.fx.type === "mine") { burst(l.x, GROUND, l.fx, l.big, true); return; }
+  const apex = rand(H * 0.18, H * 0.45) - (l.big ? H * 0.1 : 0);
+  const vy = -Math.sqrt(2 * 900 * (GROUND - apex)) / 30;
+  rockets.push({ x: l.x, y: GROUND, vx: Math.sin(l.angle) * 6, vy, fx: l.fx, big: l.big,
+                 fuse: rand(0.9, 1.15) * (GROUND - apex) / (-vy * 30) });
+}
+
+function burst(x, y, fx, big, ground = false) {
+  const colors = PALETTES[fx.palette];
+  const n = ground ? 26 : big ? 90 : { peony: 46, willow: 60, crackle: 40, strobe: 30,
+                                        salute: 24, comet: 8, whistle: 6 }[fx.type] || 40;
+  const speed = big ? 4.6 : 3.2;
+  for (let i = 0; i < n; i++) {
+    const a = ground ? rand(-Math.PI * 0.72, -Math.PI * 0.28) : rand(0, Math.PI * 2);
+    const v = ground ? rand(3, 7) : rand(0.35, 1) * speed;
+    particles.push({
+      x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - (ground ? 2 : 0),
+      color: pick(colors), size: big ? rand(1.6, 2.6) : rand(1, 2),
+      life: 0, max: fx.type === "willow" ? rand(2.2, 3.4) : fx.type === "salute" ? rand(0.15, 0.3) : rand(0.8, 1.6),
+      grav: fx.type === "willow" ? 1.4 : 0.9, drag: fx.type === "willow" ? 0.985 : 0.97,
+      flicker: fx.type === "crackle" || fx.type === "strobe",
+    });
+  }
+  if (fx.type === "salute") {  // flash
+    particles.push({ x, y, vx: 0, vy: 0, color: "#ffffff", size: big ? 60 : 40,
+                     life: 0, max: 0.12, grav: 0, drag: 1, flash: true });
+  }
+}
+
+let lastFrame = performance.now();
+function frame(now) {
+  const dt = Math.min((now - lastFrame) / 1000, 0.05); lastFrame = now;
+  tickClock(dt);
+  ctx.fillStyle = "rgba(10,10,18,0.28)"; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#1b2436"; ctx.fillRect(0, GROUND, W, H - GROUND);
+  // station markers
+  for (const ch of state.channels) {
+    const x = stationX(ch, state.channels);
+    ctx.fillStyle = "#39445c"; ctx.fillRect(x - 14, GROUND - 5, 28, 5);
+    ctx.fillStyle = "#8a93a8"; ctx.font = "10px system-ui"; ctx.textAlign = "center";
+    ctx.fillText("CH " + ch, x, GROUND + 14);
+  }
+  const s = 30 * dt * 2;      // physics step scale
+  for (let i = rockets.length - 1; i >= 0; i--) {
+    const r = rockets[i];
+    r.x += r.vx * s; r.y += r.vy * s; r.vy += 0.9 * s; r.fuse -= dt;
+    ctx.fillStyle = "#ffe9b0"; ctx.fillRect(r.x - 1, r.y - 3, 2, 6);
+    if (r.fuse <= 0 || r.vy > -1) { burst(r.x, r.y, r.fx, r.big); rockets.splice(i, 1); }
+  }
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.life += dt;
+    if (p.life > p.max) { particles.splice(i, 1); continue; }
+    p.x += p.vx * s; p.y += p.vy * s; p.vy += p.grav * s * 0.5; p.vx *= p.drag; p.vy *= p.drag;
+    const a = 1 - p.life / p.max;
+    if (p.flicker && Math.random() < 0.35) continue;
+    ctx.globalAlpha = p.flash ? a * 0.9 : a;
+    ctx.fillStyle = p.color;
+    if (p.flash) { ctx.beginPath(); ctx.arc(p.x, p.y, p.size * a, 0, 7); ctx.fill(); }
+    else ctx.fillRect(p.x, p.y, p.size, p.size);
+    ctx.globalAlpha = 1;
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ============================== show state & clock ============================== */
+const state = {
+  events: [], channels: [], playing: false, t: 0, speed: 1,
+  audio: null, duration: 600, csvName: null,
+};
+const $ = id => document.getElementById(id);
+
+function tickClock(dt) {
+  if (state.playing) {
+    if (state.audio) state.t = state.audio.currentTime;
+    else state.t += dt * state.speed;
+    if (state.t >= state.duration) { state.playing = false; syncPlayBtn(); }
+  }
+  // fire events & launches
+  for (const ev of state.events) {
+    if (!ev.fired && ev.t <= state.t) {
+      ev.fired = true; ev.firedAt = state.t;
+      if (state.t - ev.t < 2) scheduleEvent(ev, state.channels);   // skip stale on seek
+    }
+  }
+  while (launchQueue.length && launchQueue[0].at <= state.t) {
+    const l = launchQueue.shift();
+    if (state.t - l.at < 1.5) launch(l);
+  }
+  updateHud();
+}
+
+function updateHud() {
+  $("clock").textContent = fmtClock(state.t);
+  if (!seekDragging) $("seek").value = state.t;
+  // now playing = most recent fired events (within their duration)
+  const live = state.events.filter(e => e.fired && state.t - e.t < e.fx.dur)
+                           .slice(-3).map(e => `<span class="t">Ch${e.ch}·C${e.cue}</span> ${escapeHtml(shortDesc(e.desc))}`);
+  $("nowplaying").innerHTML = live.join("<br>");
+  const up = state.events.filter(e => !e.fired).slice(0, 3)
+      .map(e => `<b>${fmtClock(e.t)}</b> Ch${e.ch}·C${e.cue} ${escapeHtml(shortDesc(e.desc))}`);
+  $("next").innerHTML = up.length ? "Next: " + up.join(" &nbsp;•&nbsp; ") :
+      state.events.length ? "— all cues fired —" : $("next").innerHTML;
+  // cue panel
+  for (const ev of state.events) {
+    const el = cueEls[ev.ch + ":" + ev.cue];
+    if (!el) continue;
+    el.className = "cue " + (ev.fired ? (state.t - ev.firedAt < 1 ? "firing" : "fired") : "pending");
+  }
+}
+const shortDesc = d => d.length > 46 ? d.slice(0, 44) + "…" : d;
+const escapeHtml = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+let cueEls = {};
+function buildStations() {
+  const wrap = $("stations"); wrap.innerHTML = ""; cueEls = {};
+  const byCh = {};
+  for (const e of state.events) (byCh[e.ch] = byCh[e.ch] || new Set()).add(e.cue);
+  for (const ch of state.channels) {
+    const div = document.createElement("div"); div.className = "station";
+    div.innerHTML = `<h4>STATION — CH ${ch}</h4>`;
+    const grid = document.createElement("div"); grid.className = "cues";
+    for (let c = 1; c <= 18; c++) {
+      const chip = document.createElement("div"); chip.className = "cue"; chip.textContent = c;
+      if (byCh[ch] && byCh[ch].has(String(c))) cueEls[ch + ":" + c] = chip;
+      grid.appendChild(chip);
+    }
+    div.appendChild(grid); wrap.appendChild(div);
+  }
+}
+
+function resetShow(toZero = true) {
+  if (toZero) { state.t = 0; if (state.audio) state.audio.currentTime = 0; }
+  for (const e of state.events) { e.fired = e.t < state.t; e.firedAt = e.t; }
+  launchQueue.length = 0; particles.length = 0; rockets.length = 0;
+  updateHud();
+}
+
+function syncPlayBtn() { $("playBtn").textContent = state.playing ? "❚❚ Pause" : "▶ Play"; }
+
+/* ============================== wiring ============================== */
+function loadCsvText(text, name) {
+  const { events, warnings } = parseScript(text);
+  if (!events.length) { $("banner").textContent = "No firable events found in " + name; return; }
+  state.events = events;
+  state.channels = [...new Set(events.map(e => e.ch))].sort((a, b) => +a - +b);
+  const last = events[events.length - 1];
+  state.duration = Math.max(state.audio ? state.audio.duration || 0 : 0, last.t + last.fx.dur + 5);
+  $("seek").max = state.duration; $("dur").textContent = fmtClock(state.duration, false);
+  $("csvLabel").firstChild.textContent = name + ` (${events.length} events)`;
+  $("csvLabel").classList.add("loaded");
+  $("banner").textContent = warnings.join("  ");
+  $("playBtn").disabled = false;
+  buildStations(); resetShow();
+}
+function loadAudioFile(file) {
+  const url = URL.createObjectURL(file);
+  const a = new Audio(url); a.preload = "auto";
+  a.addEventListener("loadedmetadata", () => {
+    state.audio = a;
+    state.duration = Math.max(state.duration, a.duration);
+    $("seek").max = state.duration; $("dur").textContent = fmtClock(state.duration, false);
+    $("audioLabel").firstChild.textContent = file.name;
+    $("audioLabel").classList.add("loaded");
+    a.playbackRate = state.speed;
+  });
+}
+
+$("csvInput").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(t => loadCsvText(t, f.name));
+});
+$("audioInput").addEventListener("change", e => {
+  const f = e.target.files[0]; if (f) loadAudioFile(f);
+});
+$("playBtn").addEventListener("click", () => {
+  state.playing = !state.playing;
+  if (state.audio) state.playing ? state.audio.play() : state.audio.pause();
+  syncPlayBtn();
+});
+$("resetBtn").addEventListener("click", () => { state.playing = false;
+  if (state.audio) state.audio.pause(); syncPlayBtn(); resetShow(); });
+$("speed").addEventListener("change", e => {
+  state.speed = +e.target.value;
+  if (state.audio) state.audio.playbackRate = state.speed;
+});
+let seekDragging = false;
+$("seek").addEventListener("input", () => { seekDragging = true; });
+$("seek").addEventListener("change", e => {
+  seekDragging = false;
+  state.t = +e.target.value;
+  if (state.audio) state.audio.currentTime = state.t;
+  resetShow(false);
+});
+["dragenter", "dragover"].forEach(ev => document.addEventListener(ev, e => {
+  e.preventDefault(); document.body.classList.add("dragging");
+}));
+["dragleave", "drop"].forEach(ev => document.addEventListener(ev, e => {
+  e.preventDefault(); if (ev === "dragleave" && e.relatedTarget) return;
+  document.body.classList.remove("dragging");
+  if (ev === "drop") for (const f of e.dataTransfer.files) {
+    if (/\.csv$/i.test(f.name)) f.text().then(t => loadCsvText(t, f.name));
+    else if (/^audio\//.test(f.type) || /\.(mp3|wav|m4a|ogg|flac)$/i.test(f.name)) loadAudioFile(f);
+  }
+}));
+document.addEventListener("keydown", e => {
+  if (e.code === "Space" && !$("playBtn").disabled && e.target.tagName !== "INPUT") {
+    e.preventDefault(); $("playBtn").click();
+  }
+});
+</script>
+</body>
+</html>
