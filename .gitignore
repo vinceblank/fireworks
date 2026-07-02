@@ -9,9 +9,8 @@
 *.aiff
 *.opus
 
-# Keep audio folders visible in git
-!**/audio/README.md
-!music/README.md
+# Generated proposals (review-then-discard; the overview is the source of truth)
+*.snapped.csv
 
 # ── Python (audio analysis tooling) ──
 __pycache__/

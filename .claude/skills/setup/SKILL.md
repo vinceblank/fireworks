@@ -42,7 +42,10 @@ is backed by a device profile in `devices/`.
 
 ## Researching an unknown firing system
 
-When no `devices/<slug>.md` exists:
+When no `devices/<slug>.md` exists, delegate to the **device-researcher**
+agent (`.claude/agents/device-researcher.md`) — it keeps the verbose search
+output out of the conversation and returns a summary. If agents are
+unavailable, follow the same procedure inline:
 
 1. Web-search the manufacturer's official manual/support pages. Establish:
    architecture (controller + modules), channels vs cues, cues per module,

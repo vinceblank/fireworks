@@ -1,5 +1,11 @@
 # 2026 Show — Music Plan (DRAFT v1)
 
+> ⚠️ **STALE — timings are v1 (~10:48).** The show overview was re-timed to
+> **v2 (~9:58)**: false-finale peak ~7:35, siren bridge **8:00–8:25**, real
+> finale **8:25–9:58**. Re-time every section against the section-length
+> table in `fireworks-show-overview.md` before building the mix — a mix cut
+> to the times below will run ~55–65 s behind the firing script.
+
 Soundtrack built onto the firework running order (`fireworks-show-overview.md`). The finished audio track **is the show clock** — every Cobra Event Time matches a timecode here. Target runtime **~10:48**. Theme: classic rock + southern/country + patriotic. Explicit OK. Build it as one continuous file (see build guide at bottom). Firework durations will flex slightly to land on clean musical edit points.
 
 ## Running order

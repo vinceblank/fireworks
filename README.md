@@ -6,6 +6,9 @@ from a pile of cakes and mortars to a scripted, soundtrack-locked firing plan.
 Built around the COBRA 18R2 but designed to work with **any firing system**
 (controller + N stations × M cues): device knowledge lives in [`devices/`](devices/),
 your specific rig is described once in [`equipment.yaml`](equipment.yaml).
+The committed `equipment.yaml` is the author's rig — if you cloned this repo,
+run `/setup` and it will rebuild the file for yours (researching your firing
+system into `devices/` if it isn't already there).
 
 ## Workflow
 

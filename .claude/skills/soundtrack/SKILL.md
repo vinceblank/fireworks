@@ -57,7 +57,8 @@ normalize → export one file).
 
 Once the user has built the mix and dropped it in `<show>/audio/`:
 
-1. `pip install -r tools/audio/requirements.txt` (first time only).
+1. `pip install -r tools/audio/requirements.txt` (first time only; Python
+   3.10+. If MP3 loading fails on Windows, install ffmpeg onto PATH).
 2. `python tools/audio/analyze_mix.py <show>/audio/<mix>` → writes
    `<mix>.analysis.json` next to it: tempo, beat grid, onset hits
    (big musical moments), energy curve, and detected loud peaks.
@@ -66,6 +67,11 @@ Once the user has built the mix and dropped it in `<show>/audio/`:
 4. `python tools/audio/snap_cues.py <firing-script>.csv <mix>.analysis.json`
    → suggests nudged event times that land cues on beats/hits (never moves a
    cue more than the tolerance; writes a `*.snapped.csv` proposal, never
-   overwrites). Review the diff with the user before adopting.
-5. Commit the analysis JSON (timestamps only — no audio) so timing survives
+   overwrites). Requires the script from `/export-show` — if it doesn't
+   exist yet, export first. Review the diff with the user before adopting.
+5. **Adopting snapped times**: update `fireworks-show-overview.md` first
+   (it is the source of truth), then re-run `/export-show`. The
+   `*.snapped.csv` proposal is disposable and gitignored — never load it
+   onto the controller directly.
+6. Commit the analysis JSON (timestamps only — no audio) so timing survives
    even though the mix file can't be committed.

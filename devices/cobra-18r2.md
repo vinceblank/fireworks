@@ -57,7 +57,7 @@ Other hard limits: **max 3,600 events per program (Error 6)**; **<400 events per
 
 ## 4. Script CSV Format (`cobra.csv`)
 
-Comma-separated `.csv`. Rows beginning with `#` are comments (the familiar `#Trigger Channel,...` and `#Event Time,...` rows are just informational headers). A file contains one or more scripts, each = **one header row + event rows**; the file's **last line must be `end`** in column A (only once, at end of file — missing it gives Er4). Events must be in ascending time order (Error 21). Multiple scripts in one file: first script triggered by its channel+button wins on conflicts.
+Comma-separated `.csv`. Rows beginning with `#` are comments (the familiar `#Trigger Channel,...` and `#Event Time,...` rows are just informational headers). A file contains one or more scripts, each = **one header row + event rows**; the file's **last line must be `end`** in column A (only once, at end of file — missing it gives Er4; this repo's shows used uppercase `END` and fired fine, so case appears not to matter, but lowercase matches the official docs). Events must be in ascending time order (Error 21). Multiple scripts in one file: first script triggered by its channel+button wins on conflicts.
 
 ### Header row (one per script)
 | Col | Field (a.k.a.) | Values / meaning |

@@ -10,7 +10,9 @@ timed running order that a person can wire and a firing system can script.
 
 ## Before designing
 
-1. Read `equipment.yaml` (root). Missing or full of TODOs → run `/setup` first.
+1. Read `equipment.yaml` (root). Missing → run `/setup` first. Has TODOs →
+   only detour to `/setup` if they matter for choreography (rack inventory
+   does; audio-playback gear doesn't).
 2. Read the device profile it links (e.g. `devices/cobra-18r2.md`) — know the
    cue capacity and channel scheme you're designing into.
 3. Identify the show folder (`shows/<year>-<name>/`). If ambiguous, ask which
@@ -19,9 +21,10 @@ timed running order that a person can wire and a firing system can script.
    (cake/mortar/fountain/etc.), shot count, duration, and effect description.
    Duration and effects drive everything — if missing, estimate from shot
    count and say so, or check the vendor's site for the item.
-5. Skim the **previous show's** overview for pacing feel and mortar-group run
-   times (racks are reused) — but **never** carry forward product names or
-   layout. Every inventory is new.
+5. Skim the previous show for pacing feel and mortar-group run times (racks
+   are reused). Trust the previous **firing script** over its overview — the
+   overview may be a stale draft; the script is what actually fired. **Never**
+   carry forward product names or layout. Every inventory is new.
 
 ## Hard constraints
 
@@ -29,9 +32,11 @@ timed running order that a person can wire and a firing system can script.
   count across modules — they're physically separate stations.
 - Cakes = one cue each. Mortars = fused groups, one cue per group; group
   sizes come from the rack configuration in `equipment.yaml`.
-- Two items on the same timestamp must be on **different** modules (one
-  button press per moment per station, and it splits the wiring load).
 - Use every inventory item unless told otherwise.
+- Prefer putting simultaneous items on **different** modules: it splits the
+  wiring load and keeps manual-fire fallback one button per station.
+  (Scripted firing itself has no simultaneity limit — this is a preference,
+  not a hard rule.)
 
 ## Choreography craft
 

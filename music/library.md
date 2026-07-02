@@ -17,6 +17,12 @@ year's set and mixes can be rebuilt from scratch.
 | Nuclear air-raid siren | SFX | rising ~20 s | 2026 siren bridge | Pixabay / Orange Free Sounds |
 | American Bad Ass | Kid Rock (explicit) | riff drop → breakdown | 2026 real finale | buy MP3 |
 
+## 2025
+
+No soundtrack was recorded in this library (the show predates this
+workspace). If the 2025 tracklist is recoverable, backfill it here so
+`/soundtrack` can avoid repeats.
+
 ## SFX sources
 
 - Pixabay (royalty-free): https://pixabay.com/sound-effects/

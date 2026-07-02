@@ -21,6 +21,9 @@ unforgiving.
 2. Read the show overview. Every row in its tables becomes one event line:
    time, channel, cue, and a description that a person racing between
    stations can read at a glance (name, shot count, duration, one effect cue).
+   Rows with no channel/cue (designed silence, e.g. a siren bridge) produce
+   **no** event line. If an approved `*.snapped.csv` proposal exists, its
+   times must already be folded into the overview — flag it if not.
 3. Generate the script file into the show folder (e.g. `cobra.csv`),
    matching a prior show's export byte-for-byte in structure when one exists.
 

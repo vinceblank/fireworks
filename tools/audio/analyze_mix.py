@@ -25,8 +25,10 @@ HOP = 512
 
 
 def mmss(seconds: float) -> str:
-    m, s = divmod(seconds, 60.0)
-    return f"{int(m)}:{s:05.2f}"
+    # Integer centiseconds so 119.997 becomes 2:00.00, never 1:60.00.
+    cs = round(seconds * 100)
+    m, cs = divmod(cs, 6000)
+    return f"{m}:{cs / 100:05.2f}"
 
 
 def analyze(path: Path) -> dict:

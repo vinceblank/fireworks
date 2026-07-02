@@ -1,5 +1,10 @@
 # Fireworks Show Overview 2025 (8-Minute Version)
 
+> ⚠️ **Historical draft — does not match the final show.** The products and
+> mortar groupings below differ from `cobra.csv` in this folder, which is
+> what actually fired. Use the **CSV** as the timing/format reference for
+> future shows, not this document.
+
 ## System Setup
 - **Cobra 18r2**: 2 base stations (Channel 1 & 2), 18 cues each
 - **Mortar Groups**: Pro shells, snake tails, and divine beast mortars grouped in 6s (3s per shell, ~18s per group)
