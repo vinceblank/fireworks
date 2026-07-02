@@ -19,6 +19,7 @@ inventory → choreography → soundtrack → firing-system script.
 2. `/design-show` — choreograph a show from a show folder's inventory.
 3. `/soundtrack` — design and build the music mix; align show sections to musical structure.
 4. `/export-show` — generate the firing-system-native script (e.g. Cobra CSV) and validate it.
+5. `/field-setup` — setup-day wiring tables, ground layout groups, and checklists; optional push to Google Drive for phone access.
 
 ## Rules that persist across shows
 

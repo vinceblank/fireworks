@@ -65,4 +65,5 @@ Write `fireworks-show-overview.md` in the show folder:
 - Footer: music section lengths, spread/reserve rationale, channel load count.
 
 Follow the format of prior shows in `shows/` — it's wiring-tested. After the
-overview is approved, `/soundtrack` scores it and `/export-show` scripts it.
+overview is approved, `/soundtrack` scores it, `/export-show` scripts it,
+and `/field-setup` turns it into setup-day wiring instructions.

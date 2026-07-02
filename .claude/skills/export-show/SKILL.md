@@ -42,8 +42,8 @@ the overview is the source of truth; propose corrections there first.
 
 ## Run-of-show reminders (append to your final summary, not the CSV)
 
-Wiring happens from the overview doc; the script is loaded onto the
-controller (COBRA: USB stick → 18R2). Remind the user to: verify the script
+Wiring happens from the `/field-setup` document; the script is loaded onto
+the controller (COBRA: USB stick → 18R2). Remind the user to: verify the script
 on the controller, continuity-test every cue, confirm module channel dials
 match `equipment.yaml`, and do a dry-run of the audio + script timing before
 show night.

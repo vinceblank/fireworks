@@ -14,6 +14,8 @@ your specific rig is described once in [`equipment.yaml`](equipment.yaml).
 /design-show  →  choreograph the show from this year's inventory
 /soundtrack   →  design the music mix; the audio file becomes the show clock
 /export-show  →  generate + validate the firing-system script (e.g. Cobra CSV)
+/field-setup  →  setup-day wiring tables + ground layout; push to Google Drive
+                 so the instructions are on your phone in the field
 ```
 
 Each show lives in `shows/<year>-<name>/` — inventory in, show overview +
