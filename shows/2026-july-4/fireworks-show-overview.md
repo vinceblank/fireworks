@@ -1,5 +1,13 @@
 # Fireworks Show Overview — 2026 (DRAFT v2 — re-timed, ~9:58 runtime)
 
+> ⚠️ **INVENTORY VERIFIED 2026-07-02 (see `inventory.csv`) — mortar groups
+> need redesign.** Actual stock: **62× Pro Shells 1.75"** (38 leftover + 24
+> new — plan's 58 fits), **0× Snake Tails** (plan uses ~23 — remove/replace),
+> **Divine Beast = new pack only, assumed 6 shells** (plan uses ~21 — shrink
+> groups; confirm pack count). Also: Bad Ass Brocade confirmed as a 3-pack
+> (finale OK as designed), and the leftover **strobe is now IN** (the "no
+> strobe" note below is superseded — good candidate for the siren bridge).
+
 ## System Setup
 - **Cobra 18R2**: Ch1 = 15 cues, Ch2 = 14 cues (29 total; both under 18).
 - **Durations are now confirmed**: cake burns from demo cards / your watch (or tagged 2025 figures); mortar run times from the 2025 firing script (same racks/groups). See the spec workbook tabs *Mortar Run Times* and *Rack Fill Check*.
