@@ -45,3 +45,11 @@ and rehearse again.
 - Mix formatting issues (drift) won't show here — the tool and the 18R2
   both trust the file's timeline. The dry run on real hardware is still
   mandatory (see the device profile).
+
+## Higher-fidelity option
+
+For a photorealistic 3D rehearsal, **Finale 3D** natively imports COBRA
+script CSVs and syncs the MP3 — free via Demo Mode or a 14-day trial.
+See `tools/rehearsal/README.md` for the full comparison of external tools
+(researched 2026-07). Offer it when the user wants more than a storyboard,
+e.g. for judging actual sky-fill and effect looks.
