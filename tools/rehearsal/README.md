@@ -1,34 +1,37 @@
-# Virtual Rehearsal
+# Virtual Rehearsal — `rehearsal.html`
 
-## Option 1 (instant, always free): `rehearsal.html`
+**This is the workspace's rehearsal tool.** Zero install, zero accounts,
+fully offline: open in any browser, drag in the show's firing-script CSV +
+mix MP3, press play (space bar toggles).
 
-Open in any browser, drag in the show's firing-script CSV + mix MP3, press
-play. Canvas fireworks inferred from event descriptions, live station/cue
-panels, audio-locked clock, seek + 0.5–4× speed. A storyboard for reviewing
-timing, pacing, and structure — not a physics render.
+What it renders:
 
-## Option 2 (high fidelity, still $0): Finale 3D
+- Canvas fireworks with additive glow, inferred from each event description:
+  effect type (willow/brocade trails, crackle, strobe, mine, salute flash,
+  comets, fan spreads), palette (R/W/B, neon, rainbow, gold, …), and shot
+  count/duration parsed from text like `(100 / 0:35)` — each event fires
+  that many launches spread across its duration from its station's position.
+  Big mortar breaks get pistil cores and trailing stars.
+- A clickable **timeline strip**: every event as a tick, one lane per
+  channel, colored until fired — click anywhere to jump. Great for spotting
+  gaps and clustering at a glance.
+- Per-station cue panels using the 18R2's LED language (green pending →
+  white flash firing → red fired), a now-playing readout, next-cues ticker,
+  seek bar, and 0.5–4× speed.
 
-[Finale 3D](https://finale3d.com) **natively imports COBRA/Show Creator
-script CSVs** and renders the industry-standard 3D simulation with the MP3
-synced on the timeline — and can export back to 18R2-ready COBRA CSV.
+Limits: it's a storyboard, not a physics render — built for reviewing
+timing, pacing, structure, and channel balance. STEP scripts are
+approximated (presses assumed 3 s after the prior event); fully timed
+scripts replay exactly. The hardware dry-run before show night is still
+mandatory.
 
-- **Demo Mode**: free, instant, Lite feature set; save/export disabled
-  (import + playback reportedly work, unverified on official docs).
-- **14-day free trial**: full features on request — the guaranteed path.
-  For a once-a-year show, a trial timed two weeks before show night is a
-  legitimate $0 rehearsal ritual. Paid: Lite $149/yr if it sticks.
-- Expect ~1–3 h learning the UI; a few imported rows may need manual effect
-  assignment (it infers looks from descriptions/sizes).
+---
 
-## Options researched and rejected (July 2026)
+## Appendix: external tools (researched July 2026, for reference)
 
-| Tool | Why not |
-|---|---|
-| FWsim | Prettiest renderer, wrong economics: COBRA import locked behind Pro (~$79/mo); $49.99 Basic has no firing-system support — full manual re-entry, no export back. |
-| COBRA Show Creator ($78.79/yr) | Official scripting home, but **explicitly no visual simulation**. |
-| ShowSim | Effectively abandonware (last release ~2015, store SSL expired). |
-| GLOW 3D / IGNITE Designer | Free, but no CSV import and wrong ecosystem (retail catalogs / IGNITE hardware). |
-| Open-source (backyardhero_pyro, FireShow, …) | None accept a cue sheet + audio without DIY glue code. |
-
-Full comparison research: 2026-07-02, sources in the git history of this file.
+If photoreal 3D ever becomes worth an extra tool: **Finale 3D** is the only
+option with native COBRA CSV import + MP3 sync at $0 (Demo Mode, or a
+14-day trial; Lite $149/yr). Rejected: FWsim (COBRA import locked behind
+~$79/mo Pro), COBRA Show Creator ($78.79/yr, explicitly **no** visual
+simulation), ShowSim (abandonware since ~2015), GLOW/IGNITE and current
+open-source projects (no cue-sheet import).

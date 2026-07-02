@@ -46,10 +46,6 @@ and rehearse again.
   both trust the file's timeline. The dry run on real hardware is still
   mandatory (see the device profile).
 
-## Higher-fidelity option
-
-For a photorealistic 3D rehearsal, **Finale 3D** natively imports COBRA
-script CSVs and syncs the MP3 — free via Demo Mode or a 14-day trial.
-See `tools/rehearsal/README.md` for the full comparison of external tools
-(researched 2026-07). Offer it when the user wants more than a storyboard,
-e.g. for judging actual sky-fill and effect looks.
+`rehearsal.html` is the workspace's rehearsal path — don't suggest external
+tools unprompted. (If the user ever asks for photoreal 3D, the researched
+comparison lives in `tools/rehearsal/README.md`.)

@@ -56,6 +56,7 @@
 <div id="drop">Drop the script CSV and/or the show MP3 anywhere</div>
 
 <div id="deck">
+  <canvas id="timeline" style="width:100%;height:26px;display:block;border-radius:4px;background:#10101a;cursor:pointer"></canvas>
   <div id="transport">
     <label class="file" id="csvLabel">Load script CSV<input type="file" id="csvInput" accept=".csv,text/csv"></label>
     <label class="file" id="audioLabel">Load show audio<input type="file" id="audioInput" accept="audio/*"></label>
@@ -160,12 +161,15 @@ function parseScript(text) {
 
 /* ============================== pyro renderer ============================== */
 const sky = document.getElementById("sky"), ctx = sky.getContext("2d");
-let W = 0, H = 0, GROUND = 0;
+let W = 0, H = 0, GROUND = 0, stars = [];
 function resize() {
   W = sky.clientWidth; H = sky.clientHeight;
   sky.width = W * devicePixelRatio; sky.height = H * devicePixelRatio;
   ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
   GROUND = H - 24;
+  stars = Array.from({ length: 110 }, () => ({
+    x: Math.random() * W, y: Math.random() * GROUND * 0.9, a: 0.08 + Math.random() * 0.32,
+  }));
 }
 new ResizeObserver(resize).observe(sky); resize();
 
@@ -202,25 +206,37 @@ function launch(l) {
                  fuse: rand(0.9, 1.15) * (GROUND - apex) / (-vy * 30) });
 }
 
+function spawn(x, y, opts) {
+  particles.push(Object.assign({ x, y, px: x, py: y, life: 0 }, opts));
+}
 function burst(x, y, fx, big, ground = false) {
   const colors = PALETTES[fx.palette];
   const n = ground ? 26 : big ? 90 : { peony: 46, willow: 60, crackle: 40, strobe: 30,
                                         salute: 24, comet: 8, whistle: 6 }[fx.type] || 40;
   const speed = big ? 4.6 : 3.2;
+  const trail = fx.type === "willow" || fx.type === "comet" || big;
   for (let i = 0; i < n; i++) {
     const a = ground ? rand(-Math.PI * 0.72, -Math.PI * 0.28) : rand(0, Math.PI * 2);
     const v = ground ? rand(3, 7) : rand(0.35, 1) * speed;
-    particles.push({
-      x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - (ground ? 2 : 0),
+    spawn(x, y, {
+      vx: Math.cos(a) * v, vy: Math.sin(a) * v - (ground ? 2 : 0),
       color: pick(colors), size: big ? rand(1.6, 2.6) : rand(1, 2),
-      life: 0, max: fx.type === "willow" ? rand(2.2, 3.4) : fx.type === "salute" ? rand(0.15, 0.3) : rand(0.8, 1.6),
+      max: fx.type === "willow" ? rand(2.2, 3.4) : fx.type === "salute" ? rand(0.15, 0.3) : rand(0.8, 1.6),
       grav: fx.type === "willow" ? 1.4 : 0.9, drag: fx.type === "willow" ? 0.985 : 0.97,
-      flicker: fx.type === "crackle" || fx.type === "strobe",
+      flicker: fx.type === "crackle" || fx.type === "strobe", trail,
     });
   }
+  if (big && fx.type !== "salute") {  // pistil: contrasting slow inner core
+    const inner = PALETTES[fx.palette === "gold" ? "silver" : "gold"];
+    for (let i = 0; i < 18; i++) {
+      const a = rand(0, Math.PI * 2), v = rand(0.2, 0.45) * speed;
+      spawn(x, y, { vx: Math.cos(a) * v, vy: Math.sin(a) * v, color: pick(inner),
+                    size: rand(1.2, 2), max: rand(0.6, 1.1), grav: 0.7, drag: 0.96 });
+    }
+  }
   if (fx.type === "salute") {  // flash
-    particles.push({ x, y, vx: 0, vy: 0, color: "#ffffff", size: big ? 60 : 40,
-                     life: 0, max: 0.12, grav: 0, drag: 1, flash: true });
+    spawn(x, y, { vx: 0, vy: 0, color: "#ffffff", size: big ? 60 : 40,
+                  max: 0.12, grav: 0, drag: 1, flash: true });
   }
 }
 
@@ -228,7 +244,12 @@ let lastFrame = performance.now();
 function frame(now) {
   const dt = Math.min((now - lastFrame) / 1000, 0.05); lastFrame = now;
   tickClock(dt);
+  ctx.globalCompositeOperation = "source-over";
   ctx.fillStyle = "rgba(10,10,18,0.28)"; ctx.fillRect(0, 0, W, H);
+  for (const st of stars) {                      // faint starfield for depth
+    ctx.globalAlpha = st.a; ctx.fillStyle = "#cdd6ff"; ctx.fillRect(st.x, st.y, 1, 1);
+  }
+  ctx.globalAlpha = 1;
   ctx.fillStyle = "#1b2436"; ctx.fillRect(0, GROUND, W, H - GROUND);
   // station markers
   for (const ch of state.channels) {
@@ -237,6 +258,7 @@ function frame(now) {
     ctx.fillStyle = "#8a93a8"; ctx.font = "10px system-ui"; ctx.textAlign = "center";
     ctx.fillText("CH " + ch, x, GROUND + 14);
   }
+  ctx.globalCompositeOperation = "lighter";      // additive glow for all pyro
   const s = 30 * dt * 2;      // physics step scale
   for (let i = rockets.length - 1; i >= 0; i--) {
     const r = rockets[i];
@@ -248,15 +270,24 @@ function frame(now) {
     const p = particles[i];
     p.life += dt;
     if (p.life > p.max) { particles.splice(i, 1); continue; }
+    p.px = p.x; p.py = p.y;
     p.x += p.vx * s; p.y += p.vy * s; p.vy += p.grav * s * 0.5; p.vx *= p.drag; p.vy *= p.drag;
     const a = 1 - p.life / p.max;
     if (p.flicker && Math.random() < 0.35) continue;
     ctx.globalAlpha = p.flash ? a * 0.9 : a;
-    ctx.fillStyle = p.color;
-    if (p.flash) { ctx.beginPath(); ctx.arc(p.x, p.y, p.size * a, 0, 7); ctx.fill(); }
-    else ctx.fillRect(p.x, p.y, p.size, p.size);
+    if (p.flash) {
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size * a, 0, 7); ctx.fill();
+    } else if (p.trail) {
+      ctx.strokeStyle = p.color; ctx.lineWidth = p.size;
+      ctx.beginPath(); ctx.moveTo(p.px, p.py); ctx.lineTo(p.x, p.y); ctx.stroke();
+    } else {
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+    }
     ctx.globalAlpha = 1;
   }
+  ctx.globalCompositeOperation = "source-over";
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
@@ -288,9 +319,14 @@ function tickClock(dt) {
   updateHud();
 }
 
+let lastHud = 0;
 function updateHud() {
   $("clock").textContent = fmtClock(state.t);
   if (!seekDragging) $("seek").value = state.t;
+  drawTimeline();
+  const now = performance.now();
+  if (now - lastHud < 120) return;             // throttle the DOM-heavy parts
+  lastHud = now;
   // now playing = most recent fired events (within their duration)
   const live = state.events.filter(e => e.fired && state.t - e.t < e.fx.dur)
                            .slice(-3).map(e => `<span class="t">Ch${e.ch}·C${e.cue}</span> ${escapeHtml(shortDesc(e.desc))}`);
@@ -306,6 +342,30 @@ function updateHud() {
     el.className = "cue " + (ev.fired ? (state.t - ev.firedAt < 1 ? "firing" : "fired") : "pending");
   }
 }
+
+const CH_COLORS = ["#3ddc84", "#4de1ff", "#ffd166", "#ff2ec7", "#b14dff", "#ff9f1c"];
+const tl = $("timeline"), tctx = tl.getContext("2d");
+function drawTimeline() {
+  const w = tl.clientWidth, h = 26;
+  if (tl.width !== w * devicePixelRatio) { tl.width = w * devicePixelRatio; tl.height = h * devicePixelRatio; }
+  tctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  tctx.fillStyle = "#10101a"; tctx.fillRect(0, 0, w, h);
+  if (!state.events.length || !state.duration) return;
+  const lane = (h - 6) / Math.max(state.channels.length, 1);
+  for (const ev of state.events) {
+    const ci = state.channels.indexOf(ev.ch);
+    tctx.fillStyle = ev.fired ? "#5a2a34" : CH_COLORS[ci % CH_COLORS.length];
+    tctx.fillRect(ev.t / state.duration * w, 3 + ci * lane, 2, Math.max(lane - 2, 3));
+  }
+  tctx.fillStyle = "#ffffff";
+  tctx.fillRect(state.t / state.duration * w, 0, 1.5, h);
+}
+tl.addEventListener("click", e => {
+  if (!state.duration) return;
+  state.t = (e.offsetX / tl.clientWidth) * state.duration;
+  if (state.audio) state.audio.currentTime = state.t;
+  resetShow(false);
+});
 const shortDesc = d => d.length > 46 ? d.slice(0, 44) + "…" : d;
 const escapeHtml = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
