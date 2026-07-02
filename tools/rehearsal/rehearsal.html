@@ -47,19 +47,32 @@
   #drop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
           background: rgba(10,10,18,.85); font-size: 22px; color: var(--gold); z-index: 9; }
   body.dragging #drop { display: flex; }
+  #detail { position: fixed; right: 12px; top: 56px; width: 336px; background: var(--panel);
+            border: 1px solid var(--edge); border-radius: 10px; padding: 12px; z-index: 8;
+            display: none; box-shadow: 0 8px 30px rgba(0,0,0,.6); }
+  #detail.open { display: block; }
+  #detail h3 { font-size: 14px; color: var(--gold); margin-bottom: 6px; padding-right: 24px; }
+  #detail .desc { font-size: 12px; margin-bottom: 8px; }
+  #detail .meta { font-size: 11px; color: var(--dim); margin-bottom: 8px; }
+  #detail iframe { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 6px; }
+  #detailClose { position: absolute; top: 8px; right: 10px; background: none; border: none;
+                 color: var(--dim); font-size: 16px; padding: 2px 6px; }
+  .cue.linked { cursor: pointer; outline: 1px solid rgba(255,209,102,.35); }
 </style>
 </head>
 <body>
 <canvas id="sky"></canvas>
 <div id="hud"><div id="clock">00:00.0</div><div id="nowplaying"></div></div>
 <div id="banner"></div>
-<div id="drop">Drop the script CSV and/or the show MP3 anywhere</div>
+<div id="drop">Drop the script CSV, the show MP3, and/or effects.json anywhere</div>
+<div id="detail"><button id="detailClose">✕</button><div id="detailBody"></div></div>
 
 <div id="deck">
   <canvas id="timeline" style="width:100%;height:26px;display:block;border-radius:4px;background:#10101a;cursor:pointer"></canvas>
   <div id="transport">
     <label class="file" id="csvLabel">Load script CSV<input type="file" id="csvInput" accept=".csv,text/csv"></label>
     <label class="file" id="audioLabel">Load show audio<input type="file" id="audioInput" accept="audio/*"></label>
+    <label class="file" id="fxLabel">effects.json<input type="file" id="fxInput" accept=".json,application/json"></label>
     <button class="primary" id="playBtn" disabled>▶ Play</button>
     <button id="resetBtn">⟲ Reset</button>
     <select id="speed">
@@ -200,7 +213,9 @@ function scheduleEvent(ev, channels) {
 
 function launch(l) {
   if (l.fx.type === "mine") { burst(l.x, GROUND, l.fx, l.big, true); return; }
-  const apex = rand(H * 0.18, H * 0.45) - (l.big ? H * 0.1 : 0);
+  let apex = rand(H * 0.18, H * 0.45) - (l.big ? H * 0.1 : 0);
+  if (l.fx.height === "low") apex = rand(H * 0.55, H * 0.72);
+  else if (l.fx.height === "high") apex = rand(H * 0.10, H * 0.28);
   const vy = -Math.sqrt(2 * 900 * (GROUND - apex)) / 30;
   rockets.push({ x: l.x, y: GROUND, vx: Math.sin(l.angle) * 6, vy, fx: l.fx, big: l.big,
                  fuse: rand(0.9, 1.15) * (GROUND - apex) / (-vy * 30) });
@@ -243,6 +258,10 @@ function burst(x, y, fx, big, ground = false) {
 let lastFrame = performance.now();
 function frame(now) {
   const dt = Math.min((now - lastFrame) / 1000, 0.05); lastFrame = now;
+  if (!state.manual) stepFrame(dt);
+  requestAnimationFrame(frame);
+}
+function stepFrame(dt) {
   tickClock(dt);
   ctx.globalCompositeOperation = "source-over";
   ctx.fillStyle = "rgba(10,10,18,0.28)"; ctx.fillRect(0, 0, W, H);
@@ -288,16 +307,65 @@ function frame(now) {
     ctx.globalAlpha = 1;
   }
   ctx.globalCompositeOperation = "source-over";
-  requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 
 /* ============================== show state & clock ============================== */
 const state = {
   events: [], channels: [], playing: false, t: 0, speed: 1,
-  audio: null, duration: 600, csvName: null,
+  audio: null, duration: 600, csvName: null, profiles: null,
 };
 const $ = id => document.getElementById(id);
+
+/* effects.json: per-product overrides mined from vendor demo videos.
+   [{match, video, type, fan, palette, height, notes, verified}] */
+function applyEffects() {
+  if (!state.profiles) return;
+  for (const ev of state.events) {
+    const d = ev.desc.toLowerCase();
+    const p = state.profiles.find(p => p.match && d.includes(p.match.toLowerCase()));
+    if (!p) continue;
+    if (p.type) ev.fx.type = p.type;
+    if (p.palette && PALETTES[p.palette]) ev.fx.palette = p.palette;
+    if (typeof p.fan === "boolean") ev.fx.fan = p.fan;
+    if (p.height) ev.fx.height = p.height;
+    ev.fx.video = p.video || null;
+    ev.fx.notes = p.notes || null;
+  }
+  markLinkedCues();
+}
+function markLinkedCues() {
+  for (const ev of state.events) {
+    const el = cueEls[ev.ch + ":" + ev.cue];
+    if (el && ev.fx.video) el.classList.add("linked");
+  }
+}
+function loadEffectsText(text, name) {
+  try {
+    const parsed = JSON.parse(text);
+    state.profiles = Array.isArray(parsed) ? parsed : parsed.products;
+    if (!Array.isArray(state.profiles)) throw new Error("expected an array or {products:[...]}");
+  } catch (err) { $("banner").textContent = name + ": " + err.message; return; }
+  $("fxLabel").firstChild.textContent = `${name} (${state.profiles.length} products)`;
+  $("fxLabel").classList.add("loaded");
+  applyEffects();
+}
+const ytId = url => (/(?:v=|youtu\.be\/|\/embed\/|\/shorts\/)([\w-]{11})/.exec(url || "") || [])[1];
+function showDetail(ch, cue) {
+  const ev = state.events.find(e => e.ch === ch && e.cue === cue);
+  if (!ev) return;
+  const vid = ytId(ev.fx.video);
+  $("detailBody").innerHTML =
+    `<h3>Ch ${ev.ch} · Cue ${ev.cue} — ${fmtClock(ev.t)}</h3>
+     <div class="desc">${escapeHtml(ev.desc)}</div>
+     <div class="meta">effect: ${ev.fx.type}${ev.fx.fan ? " (fan)" : ""} · palette: ${ev.fx.palette}` +
+    (ev.fx.height ? ` · height: ${ev.fx.height}` : "") +
+    (ev.fx.notes ? `<br>${escapeHtml(ev.fx.notes)}` : "") + `</div>` +
+    (vid ? `<iframe src="https://www.youtube-nocookie.com/embed/${vid}" allowfullscreen
+             title="demo video"></iframe>`
+         : `<div class="meta">no demo video linked — add one in effects.json</div>`);
+  $("detail").classList.add("open");
+}
 
 function tickClock(dt) {
   if (state.playing) {
@@ -380,7 +448,11 @@ function buildStations() {
     const grid = document.createElement("div"); grid.className = "cues";
     for (let c = 1; c <= 18; c++) {
       const chip = document.createElement("div"); chip.className = "cue"; chip.textContent = c;
-      if (byCh[ch] && byCh[ch].has(String(c))) cueEls[ch + ":" + c] = chip;
+      if (byCh[ch] && byCh[ch].has(String(c))) {
+        cueEls[ch + ":" + c] = chip;
+        chip.addEventListener("click", () => showDetail(ch, String(c)));
+        chip.style.cursor = "pointer";
+      }
       grid.appendChild(chip);
     }
     div.appendChild(grid); wrap.appendChild(div);
@@ -409,7 +481,7 @@ function loadCsvText(text, name) {
   $("csvLabel").classList.add("loaded");
   $("banner").textContent = warnings.join("  ");
   $("playBtn").disabled = false;
-  buildStations(); resetShow();
+  buildStations(); applyEffects(); resetShow();
 }
 function loadAudioFile(file) {
   const url = URL.createObjectURL(file);
@@ -431,6 +503,11 @@ $("csvInput").addEventListener("change", e => {
 $("audioInput").addEventListener("change", e => {
   const f = e.target.files[0]; if (f) loadAudioFile(f);
 });
+$("fxInput").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(t => loadEffectsText(t, f.name));
+});
+$("detailClose").addEventListener("click", () => $("detail").classList.remove("open"));
 $("playBtn").addEventListener("click", () => {
   state.playing = !state.playing;
   if (state.audio) state.playing ? state.audio.play() : state.audio.pause();
@@ -458,6 +535,7 @@ $("seek").addEventListener("change", e => {
   document.body.classList.remove("dragging");
   if (ev === "drop") for (const f of e.dataTransfer.files) {
     if (/\.csv$/i.test(f.name)) f.text().then(t => loadCsvText(t, f.name));
+    else if (/\.json$/i.test(f.name)) f.text().then(t => loadEffectsText(t, f.name));
     else if (/^audio\//.test(f.type) || /\.(mp3|wav|m4a|ogg|flac)$/i.test(f.name)) loadAudioFile(f);
   }
 }));
@@ -466,6 +544,36 @@ document.addEventListener("keydown", e => {
     e.preventDefault(); $("playBtn").click();
   }
 });
+
+/* ---------- automation API (headless recording / AI validation) ----------
+   Drive from Playwright/Puppeteer without file pickers or wall-clock time:
+     rehearsal.loadScript(csvText)   rehearsal.loadEffects(jsonText)
+     rehearsal.stepTo(t, fps)        deterministic: advance sim to t seconds
+     rehearsal.getEvents()           [{t, ch, cue, desc, type, video}]
+     rehearsal.getState()            {t, fired, total, particles}
+   stepTo renders every intermediate frame synchronously, so a screenshot
+   right after shows the sky as it would look at that moment.            */
+window.rehearsal = {
+  loadScript: (text, name = "script.csv") => loadCsvText(text, name),
+  loadEffects: (text, name = "effects.json") => loadEffectsText(text, name),
+  stepTo(t, fps = 30) {
+    state.manual = true; state.playing = false;
+    if (t < state.t) { state.t = Math.max(t - 3, 0); resetShow(false); }
+    const dt = 1 / fps;
+    while (state.t < t - 1e-9) {
+      state.t = Math.min(state.t + dt, t);
+      stepFrame(dt);
+    }
+  },
+  getEvents: () => state.events.map(e => ({
+    t: e.t, clock: fmtClock(e.t), ch: e.ch, cue: e.cue, desc: e.desc,
+    type: e.fx.type, fan: e.fx.fan, palette: e.fx.palette, video: e.fx.video || null,
+  })),
+  getState: () => ({
+    t: state.t, fired: state.events.filter(e => e.fired).length,
+    total: state.events.length, particles: particles.length, duration: state.duration,
+  }),
+};
 </script>
 </body>
 </html>

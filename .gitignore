@@ -12,6 +12,10 @@
 # Generated proposals (review-then-discard; the overview is the source of truth)
 *.snapped.csv
 
+# ── Rehearsal recorder ──
+node_modules/
+rehearsal-captures/
+
 # ── Python (audio analysis tooling) ──
 __pycache__/
 *.pyc

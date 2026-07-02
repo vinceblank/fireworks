@@ -18,9 +18,48 @@ readout, seek/speed controls.
    whole point — rehearse with it if it exists.
 2. Open the tool in the default browser
    (`start tools/rehearsal/rehearsal.html` on Windows).
-3. Tell the user exactly which two files to drag in (full paths to the
-   show's script CSV and mix file) — the tool takes drag-and-drop or the
-   two load buttons. Space bar = play/pause; 2×/4× speed for quick passes.
+3. Tell the user exactly which files to drag in (full paths to the show's
+   script CSV, mix file, and `effects.json` if present) — drag-and-drop or
+   the load buttons. Space bar = play/pause; 2×/4× speed for quick passes.
+
+## effects.json (per-show, optional but worth building)
+
+`<show>/effects.json` refines the animation beyond description-keyword
+guessing and links each product to its vendor demo video (the user buys
+from Pro Fireworks — their YouTube channel has demos for most products).
+Schema: an array of
+`{match, video, type, fan, palette, height, notes, verified}` — `match` is
+a lowercase substring of the cue description; `type` ∈ peony|willow|
+crackle|strobe|mine|salute|comet|whistle; `palette` ∈ rwb|gold|neon|
+rainbow|silver|red|green|blue|mixed; `height` ∈ low|mid|high. In the
+simulator, cue chips with a video get a gold outline — clicking any chip
+opens a detail panel with the effect profile and the embedded demo.
+
+To build/extend it: search "Pro Fireworks <product>" on YouTube, verify
+via the oEmbed endpoint (`youtube.com/oembed?url=...` → author_name
+"Pro Fireworks"), pull effect details from the profireworks.com product
+page, and fill the fields. Delegate the fan-out to an agent when doing a
+whole inventory.
+
+## Headless run (agents: validate the show yourself)
+
+You can rehearse and *watch* the show without the user:
+
+1. One-time setup: `cd tools/rehearsal && npm install && npx playwright install chromium`.
+2. `node tools/rehearsal/record.mjs <show>/cobra.csv [<show>/effects.json]`
+   → deterministic replay (no wall-clock wait), one screenshot ~1.2 s after
+   every cue + periodic sweeps, `index.json` with per-frame metadata and a
+   particle-count dead-air heuristic, into `<show>/rehearsal-captures/`
+   (gitignored).
+3. **Read the PNGs in order** and judge against the checklist below; the
+   filenames embed clock + channel + cue + description. Cross-check flagged
+   "possible dead air" sweeps — sparse sequential cakes can momentarily
+   show zero particles without being real dead air, and designed silence
+   (siren bridge) *should* be empty.
+4. Report findings as proposed overview edits, like any review.
+
+The page also exposes `window.rehearsal` (loadScript / loadEffects /
+stepTo / getEvents / getState) for custom probes.
 
 ## What to review (give the user this checklist)
 

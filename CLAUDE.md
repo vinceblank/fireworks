@@ -33,7 +33,7 @@ inventory → choreography → soundtrack → firing-system script.
 
 - New show: copy nothing — create `shows/<year>-<name>/`, drop the inventory file in, run the skills in order.
 - Never commit audio files (`.gitignore` enforces this). Local music lives in `shows/<show>/audio/` or `music/`.
-- Canonical deliverable filenames for new shows: `inventory.csv`/`.xlsx`, `fireworks-show-overview.md` (sectioned tables: Time, Ch, Cue, Firework, Shots/Duration, Notes), `music-plan.md`, the firing script export (e.g. `cobra.csv`), `field-setup.md`. Older shows use legacy names — read them, don't imitate them.
+- Canonical deliverable filenames for new shows: `inventory.csv`/`.xlsx`, `fireworks-show-overview.md` (sectioned tables: Time, Ch, Cue, Firework, Shots/Duration, Notes), `music-plan.md`, the firing script export (e.g. `cobra.csv`), `field-setup.md`, and optional `effects.json` (per-product demo-video links + effect profiles for the rehearsal simulator — see the `/rehearse` skill). Older shows use legacy names — read them, don't imitate them.
 - Within a show folder, the exported firing script is generated from the overview; if they disagree, the **overview** is the design source of truth (fix it, re-export). Across *historical* shows, trust the script — it's what actually fired.
 
 ## Safety
