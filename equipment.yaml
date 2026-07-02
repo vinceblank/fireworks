@@ -35,9 +35,9 @@ mortar_racks:
   notes: |
     2025/2026 group configs seen in past shows: 1x21, 4x4, 3x7 fan (1.75"),
     1x11, 3x3 fan (5"), 1x9, 3x3 fan (6"). Confirm physical rack inventory.
-    OPEN QUESTION: past docs call some shells 5"/6" — consumer 1.4G mortars
-    top out around 1.75-3" tubes, so confirm whether those figures are tube
-    size, break spread, or vendor marketing, and record the answer here.
+    The 5"/6" figures on some shells are vendor marketing (nominal height/
+    spread, not tube size) — all consumer 1.4G product. Don't treat them as
+    physical tube diameters when planning racks.
 
 audio_playback:
   device: TODO                      # PA / speaker used on show night
