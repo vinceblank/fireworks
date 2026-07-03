@@ -27,3 +27,6 @@ venv/
 ~$*.docx
 Thumbs.db
 .DS_Store
+
+# Rehearsal-clock script variants (derived; never load on the controller)
+*.rehearsal.csv

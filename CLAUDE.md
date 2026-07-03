@@ -9,8 +9,8 @@ inventory → choreography → soundtrack → firing-system script.
 |------|------------|
 | `equipment.yaml` | The user's firing system, racks, and site. **Read this first.** Run `/setup` if missing or stale. |
 | `devices/` | Firing-system knowledge base — one technical profile per device (channels, cues, script export format). `devices/firing-systems.md` covers generic concepts; `devices/TEMPLATE.md` is the profile skeleton. |
-| `shows/<year>-<name>/` | One folder per show (e.g. `shows/2026-july-4/`). Contains inventory, `fireworks-show-overview.md`, music plan, exported firing script, and an `audio/` folder whose audio files are gitignored. |
-| `music/` | Shared music/SFX library notes. Audio files themselves are **gitignored** (copyright) — only metadata and build notes are committed. |
+| `shows/<year>-<name>/` | One folder per show (e.g. `shows/2026-july-4/`). Contains inventory, `fireworks-show-overview.md`, music plan, exported firing script, and an `audio/` folder holding **only the final mix** (gitignored) + its committed `.analysis.json`. |
+| `music/` | Shared audio library — **all reusable audio lives here**: purchased song MP3s in `music/tracks/`, SFX/voice drops in `music/sfx/`. Audio files themselves are **gitignored** (copyright) — only metadata (`library.md`, READMEs with source URLs/licenses) is committed. |
 | `tools/audio/` | Python audio analysis: beat/hit detection on the final mix, cue-time snapping. |
 
 ## Skills (the workflow, in order)
@@ -32,7 +32,7 @@ inventory → choreography → soundtrack → firing-system script.
 ## Conventions
 
 - New show: copy nothing — create `shows/<year>-<name>/`, drop the inventory file in, run the skills in order.
-- Never commit audio files (`.gitignore` enforces this). Local music lives in `shows/<show>/audio/` or `music/`.
+- Never commit audio files (`.gitignore` enforces this). Reusable audio (bought tracks, SFX) lives in `music/tracks/` and `music/sfx/` — shared across shows; only the final mix goes in `shows/<show>/audio/`.
 - Canonical deliverable filenames for new shows: `inventory.csv`/`.xlsx`, `fireworks-show-overview.md` (sectioned tables: Time, Ch, Cue, Firework, Shots/Duration, Notes), `music-plan.md`, the firing script export (e.g. `cobra.csv`), `field-setup.md`, and optional `effects.json` (per-product demo-video links + effect profiles for the rehearsal simulator — see the `/rehearse` skill). Older shows use legacy names — read them, don't imitate them.
 - Within a show folder, the exported firing script is generated from the overview; if they disagree, the **overview** is the design source of truth (fix it, re-export). Across *historical* shows, trust the script — it's what actually fired.
 

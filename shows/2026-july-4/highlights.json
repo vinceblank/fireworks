@@ -1,0 +1,142 @@
+[
+ {
+  "t": 0.0,
+  "label": "Song 1: American Kids begins",
+  "kind": "song"
+ },
+ {
+  "t": 6.0,
+  "label": "SYNC PRESS (press trigger here)",
+  "kind": "sync"
+ },
+ {
+  "t": 8.0,
+  "label": "First lyric \u2014 confirms your press was on time",
+  "kind": "verse"
+ },
+ {
+  "t": 39.0,
+  "label": "AK chorus 1",
+  "kind": "chorus"
+ },
+ {
+  "t": 102.0,
+  "label": "AK chorus 2",
+  "kind": "chorus"
+ },
+ {
+  "t": 135.44,
+  "label": "AK fade-out begins",
+  "kind": "exit"
+ },
+ {
+  "t": 140.6,
+  "label": "Song 2: Only in America enters (verse 2)",
+  "kind": "song"
+ },
+ {
+  "t": 197.5,
+  "label": "OIA chorus 2",
+  "kind": "chorus"
+ },
+ {
+  "t": 238.8,
+  "label": "OIA final choruses",
+  "kind": "chorus"
+ },
+ {
+  "t": 291.12,
+  "label": "OIA chorus resolution / ring-down",
+  "kind": "exit"
+ },
+ {
+  "t": 292.1,
+  "label": "Song 3: Crazy Train \u2014 ALL ABOARD!",
+  "kind": "song"
+ },
+ {
+  "t": 299.39,
+  "label": "CT main riff kicks in",
+  "kind": "hit"
+ },
+ {
+  "t": 366.0,
+  "label": "CT chorus 1",
+  "kind": "chorus"
+ },
+ {
+  "t": 438.06,
+  "label": "CT hard cut",
+  "kind": "exit"
+ },
+ {
+  "t": 441.06,
+  "label": "Song 4: Thunderstruck chants begin",
+  "kind": "song"
+ },
+ {
+  "t": 485.18,
+  "label": "TS build hit",
+  "kind": "hit"
+ },
+ {
+  "t": 499.16,
+  "label": "TS build hit 2",
+  "kind": "hit"
+ },
+ {
+  "t": 505.0,
+  "label": "TS vocals begin (railroad track verse)",
+  "kind": "hit"
+ },
+ {
+  "t": 526.59,
+  "label": "TS pre-chorus hit",
+  "kind": "hit"
+ },
+ {
+  "t": 542.78,
+  "label": "TS chorus \u2014 THUNDERSTRUCK!",
+  "kind": "chorus"
+ },
+ {
+  "t": 552.87,
+  "label": "TS last hit; fade begins 9:12",
+  "kind": "exit"
+ },
+ {
+  "t": 559.0,
+  "label": "Siren spin-up",
+  "kind": "sfx"
+ },
+ {
+  "t": 587.0,
+  "label": "Siren dies \u2014 dark",
+  "kind": "sfx"
+ },
+ {
+  "t": 588.8,
+  "label": "FINALE: 1812 enters",
+  "kind": "song"
+ },
+ {
+  "t": 591.82,
+  "label": "1812 SLAM",
+  "kind": "hit"
+ },
+ {
+  "t": 602.94,
+  "label": "1812 cannon hit 1",
+  "kind": "hit"
+ },
+ {
+  "t": 618.14,
+  "label": "1812 cannon hit 2",
+  "kind": "hit"
+ },
+ {
+  "t": 632.84,
+  "label": "1812 final chord (1x9 exclamation target)",
+  "kind": "hit"
+ }
+]

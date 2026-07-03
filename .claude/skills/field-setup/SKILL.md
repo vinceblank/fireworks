@@ -32,11 +32,38 @@ Structure, in this order (setup happens in this order too):
    `| Cue | Firework | Type | Placement group | Notes |`
    Notes carry what the wirer needs: fused-group size for mortar racks,
    "pair with Ch2-C1" for simultaneous walls, fan orientation.
-4. **Placement group details** — for each group: which items, why they're
+4. **Mortar fusing table** — one row per fused group: rack, shell count,
+   target pace (from the overview), and the **fuse cut length between
+   tubes for each fuse type on hand** (rates in `equipment.yaml`;
+   length = pace ÷ rate — 2026 example: 1.5 s/shell = 12 in yellow or
+   7 in pink). Main runs (igniter → group) use the slow fuse (green),
+   cut to equal lengths within a group. Include a test-burn reminder
+   (visco batch rates vary). **When multiple cue-groups share one rack**,
+   require labeled/color-coded runs and physical separation so a hot
+   earlier group can't light a later run.
+5. **Placement group details** — for each group: which items, why they're
    together, spacing/orientation warnings.
-5. **Checklists** — wiring-complete walk (every cue in the tables), local
+6. **Checklists** — wiring-complete walk (every cue in the tables), local
    continuity test per module, remote continuity from the controller,
    audio dry-run, arming steps. Pull specifics from the device profile.
+7. **No-wires dry-run protocol** (bench test before setup day; owner-
+   requested level of detail — ALWAYS give knob-level instructions:
+   every keyswitch position, channel-dial position, and LED meaning):
+   - Module keyswitches → **ARM** (TEST-keyed modules won't accept the
+     script or execute; with bare terminals ARM is harmless — each fired
+     cue is a 0.1 s pulse into an empty terminal).
+   - Module channel dials per the wiring plan; remote parked on the
+     script's TRIGGER CHANNEL (works on any firmware).
+   - Expected continuity signature: ALL scripted cues RED (scripted, no
+     continuity) — correct with nothing wired; count reds per channel as
+     a cue-count cross-check.
+   - Remote ARM → wait for SOLID ARM LED + device count, then run the
+     real show ritual against the real mix end-to-end; after the run all
+     scripted cue LEDs show fired-red.
+   - Second pass: practice DISARM abort → re-ARM → restart → STEP
+     catch-up, and one +/− nudge.
+   - Keyswitch discipline note: modules stay keyed TEST during real
+     wiring days; ARM only at dusk as the final step.
 
 ## Placement grouping logic
 
@@ -75,3 +102,11 @@ Drive connector is on):
 The repo copy is the source of truth; the Drive copy is a convenience
 export. Note the push date in the doc footer so a stale phone copy is
 detectable.
+
+**Media files (the show mix etc.) canNOT go through the Drive connector** —
+create_file carries content inside the tool call as base64, and a >10 MB
+MP3 is orders of magnitude over the payload limit. Instead: SendUserFile
+the MP3 (saveable from the phone app), and tell the user the two manual
+paths: drag-drop into the Drive folder on the PC, or phone share-sheet →
+"Save to Drive" → pick the folder. Also remind: phone on Do Not Disturb
+during the show.

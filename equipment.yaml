@@ -31,17 +31,77 @@ firing_system:
 mortar_racks:
   reused_yearly: true
   firing: fused-groups              # tubes fused into groups; one cue fires a group
-  racks: TODO                       # list tube counts / diameters via /setup
+  racks:                            # USER-CONFIRMED 2026-07-02 (actual fleet)
+    - 3x6 fan (18 tubes)
+    - 4x4 square (16 tubes)
+    - 3x7 fan (21 tubes)
+    - 1x9 straight (9 tubes)
+    - 1x21 straight (21 tubes)
+  total_tubes: 85
+  tube_diameter: 1.75in             # all consumer 1.4G canister shells
+  fuse:                             # USER-CONFIRMED; ties shells by fuse, so
+    - yellow: 1.5 s/ft              #   groups can be more granular than racks
+    - pink: 2.5 s/ft                #   and multiple cue-groups can share a rack
+    - green: 27 s/ft (slow — main runs AND chained shell beds)
+  shells: generic                   # USER 2026-07-03: mortar types are
+                                    # intermixed — treat all shells the same;
+                                    # groups are defined by RACK + WIRING only
+  ematch_placement: at the first shell's tap (USER-CONFIRMED) — no fuse
+                                    # lead-in; cue -> first break = leader+lift
+                                    # ~= 5.5s for EVERY group
+  wiring:                           # actual as-wired burn specs (per rack)
+    - rack: 1x21 straight
+      main: 43in green (27 s/ft) = ~96.8s end-to-end
+      taps: 21 shells along the run => ~4.8 s/shell
+      first_break: ~5.5s after cue (e-match at tap 1; leader+lift)
+      span: ~1:40 continuous bed
+    - rack: 1x9 straight
+      main: 18in pink (2.5 s/ft) = ~3.75s end-to-end
+      taps: 9 shells => ~0.47 s/shell (rapid volley)
+      first_break: ~5.5s after cue; all 9 break within ~4s
+      role: RESERVED — the exclamation mark on the very end of the finale
+    - rack: 3x7 fan
+      main: 15in green PER ROW (~33.75s each; 7 shells => ~5.6 s/shell)
+      rows: yellow-bridged to ONE e-match => all 3 rows parallel
+            (USER-CONFIRMED) => 3 fanned breaks every ~5.6s for ~34s
+      first_break: ~5.5s after cue
+      role: sustained tri-angle fan barrage (false-finale wall)
+    - rack: 4x4 square
+      main: 9in yellow (3 shells => burst within ~1.1s) then ~44in green
+            (13 shells => ~8.3 s/shell for ~99s)
+      first_break: ~5.5s after cue, then 3-shell BURST, then slow simmer
+      span: ~1:45 total (bang-then-bed profile)
+    - rack: 3x6 fan
+      main: 15in green PER ROW (~33.75s each; 6 shells => ~6.75 s/shell)
+      rows: yellow-bridged to ONE e-match, parallel (USER-CONFIRMED)
+            => 3 fanned breaks every ~6.75s for ~34s
+      first_break: ~5.5s after cue (3 breaks land together = entry slam)
+      role: second fan wall; first simultaneous triple = 1812 entry candidate
   notes: |
-    2025/2026 group configs seen in past shows: 1x21, 4x4, 3x7 fan (1.75"),
-    1x11, 3x3 fan (5"), 1x9, 3x3 fan (6"). Confirm physical rack inventory.
     The 5"/6" figures on some shells are vendor marketing (nominal height/
-    spread, not tube size) — all consumer 1.4G product. Don't treat them as
-    physical tube diameters when planning racks.
+    spread, not tube size) — all consumer 1.4G product fires from 1.75"
+    tubes. Shell-to-shell pace is set by fuse length between tubes
+    (yellow/pink); green carries the run from the igniter to the group.
+    TIMING MODEL (owner-verified 2026-07-02): cakes = INSTANT (igniter on
+    the cake fuse; fire ON the target beat). Mortar shells = e-match lights
+    the leader fuse which burns down the tube to the lift charge: cue ->
+    first break ~= 5.5s (~3.5s fuse + ~2s lift) -> script shell groups
+    5.5s before their first target break.
+    2026 requirements: shows/2026-july-4/mortar-racks-2026.md.
 
 audio_playback:
-  device: TODO                      # PA / speaker used on show night
-  notes: soundtrack file is the master show clock
+  device: phone -> Bluetooth speaker
+  sync: manual                      # no Audio Box; script started by ear
+  notes: |
+    Soundtrack file is the master show clock. Show-start ritual: manually
+    fire the strobe cue, start the mix on the phone, then press the script
+    trigger button on a beat-verified musical landmark in song 1 (2026:
+    user-called press point @ mix 0:06, two seconds before the first lyric
+    => all Cobra event times are mix - 6.0s; first cue 16s after t=0;
+    hearing the lyric right after the press confirms timing). Syncing by
+    ear self-corrects
+    Bluetooth latency. 18R2 +/- buttons nudge timing mid-show. Owner pacing
+    rule: first fireworks within ~20-30s of the music starting.
 
 site:
   type: backyard

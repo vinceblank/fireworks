@@ -42,6 +42,7 @@ Technical knowledge base for choreographing shows on the COBRA wireless firing s
    - **Timed Event**: entire show fires automatically from one trigger button press; unlimited simultaneous channels/cues at 1/100 s resolution.
    - **STEP script**: pre-planned order, one button press per event; hops across channels/modules freely; can fire several modules per press.
    - **STEP/Timed hybrid**: STEP rows pause the script ("SP" on display) and following timed rows run relative to that STEP (the clock **resets to 0 at each STEP**).
+   - **Observed (owner rig, 2026 dry-run)**: with header Trigger Button = `STEP`, the FIRST STEP press starts/queues the script (nothing fires; display shows the pending STEP row) — the SECOND press fires the first STEP row. Budget one extra "wake" press in run-of-show docs.
    - While a timed script runs you can still fire cues manually (slightly reduces redundancy of the manual commands), nudge timing with **+/−** buttons (disabled under SMPTE), or press STEP to jump immediately to the next event.
 
 ### Scripting capacity by firmware

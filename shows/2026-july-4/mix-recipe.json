@@ -1,0 +1,74 @@
+{
+  "output": "shows/2026-july-4/audio/2026-show-mix.wav",
+  "sample_rate": 44100,
+  "target_rms_db": -14.0,
+  "items": [
+    {
+      "name": "american-kids (0:00 -> 2:15.4 then 5s full fade-out)",
+      "file": "music/tracks/04 - American Kids.mp3",
+      "src_start": 0.0,
+      "src_end": 140.44,
+      "at": 0.0,
+      "fade_in": 0.0,
+      "fade_out": 5.0
+    },
+    {
+      "name": "crazy-train (ALL ABOARD->chorus2 exit hit)",
+      "file": "music/tracks/01 - Crazy Train.mp3",
+      "src_start": 0.0,
+      "src_end": 146.24,
+      "at": 291.82,
+      "fade_in": 0.0,
+      "fade_out": 0.8
+    },
+    {
+      "name": "only-in-america (verse 2 -> final chorus END 4:08.5, no outro vamp)",
+      "file": "music/tracks/01 - Only in America.mp3",
+      "src_start": 97.78,
+      "src_end": 248.5,
+      "at": 140.6,
+      "fade_in": 2.0,
+      "fade_out": 1.2
+    },
+    {
+      "name": "thunderstruck (0:00 continuous, 4s fade-out 9:12 -> 9:16)",
+      "file": "music/tracks/01 - Thunderstruck.mp3",
+      "src_start": 0.0,
+      "src_end": 114.94,
+      "at": 441.06,
+      "fade_in": 2.5,
+      "fade_out": 4.0
+    },
+    {
+      "name": "air-raid-siren (spin-up -> wail, fades on the ramp-down at 9:47)",
+      "file": "music/sfx/siren-air-raid-OFS.mp3",
+      "src_start": 0.0,
+      "src_end": 28.0,
+      "at": 559.0,
+      "fade_in": 0.0,
+      "fade_out": 2.0
+    },
+    {
+      "name": "1812-overture (true finale: frenzy + march)",
+      "file": "music/tracks/1812-overture-us-marine-band.opus",
+      "src_start": 668.8,
+      "src_end": 732.0,
+      "at": 588.8,
+      "gain_db": 1.0,
+      "fade_in": 0.0,
+      "fade_out": 4.0
+    }
+  ],
+  "overlays": [
+    {
+      "name": "low-rumble (under siren)",
+      "file": "music/sfx/rumble-low-thunder-OFS.mp3",
+      "src_start": 0.0,
+      "src_end": 19.0,
+      "at": 566.0,
+      "gain_db": -8.0,
+      "fade_in": 3.0,
+      "fade_out": 2.0
+    }
+  ]
+}

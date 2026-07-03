@@ -26,8 +26,14 @@ is backed by a device profile in `devices/`.
      the device profile — don't ask if the profile answers it.)
    - **Audio**: how music is played (synced audio box vs. manual playback) and
      on what device.
-   - **Mortar racks**: tube counts, diameters, whether tubes are fused into
-     groups (one cue per group) or fired individually.
+   - **Mortar racks**: each rack's geometry and tube count (e.g. 3×6 fan,
+     4×4 square, 1×21 straight), diameters, and whether tubes are fused
+     into groups (one cue per group) or fired individually. Record the
+     fleet's **total tube count** — designs must fit shells ≤ tubes.
+   - **Fuse inventory**: every fuse type on hand with its burn rate in
+     s/ft (e.g. 2026: yellow 1.5, pink 2.5, green 27 — green for main
+     runs). Design and field-setup derive shell pacing and cut lengths
+     from these rates.
    - **Site**: backyard/field, rough audience distance, any constraints.
    - **Show defaults**: target length, overlap style, finale reservation.
 

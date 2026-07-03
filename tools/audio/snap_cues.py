@@ -76,11 +76,18 @@ def main() -> None:
     ap.add_argument("analysis", type=Path, help="analysis JSON from analyze_mix.py")
     ap.add_argument("--tolerance", type=float, default=1.5,
                     help="max seconds a cue may move (default 1.5)")
+    ap.add_argument("--offset", type=float, default=0.0,
+                    help="seconds the script clock lags the audio clock "
+                         "(mix time = script time + offset); use when the "
+                         "script trigger is pressed mid-song, e.g. 38.0 for "
+                         "the 2026 show's 0:38 sync press")
     args = ap.parse_args()
 
     analysis = json.loads(args.analysis.read_text())
-    beats = analysis.get("beats", [])
-    hits = [h["time"] for h in analysis.get("big_hits", [])]
+    # Shift the musical grid into the script's clock so proposals stay in
+    # script time (analysis JSON is always on the audio/mix clock).
+    beats = [b - args.offset for b in analysis.get("beats", [])]
+    hits = [h["time"] - args.offset for h in analysis.get("big_hits", [])]
     if not beats and not hits:
         sys.exit("analysis JSON has no beats or hits")
 

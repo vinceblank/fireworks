@@ -16,6 +16,8 @@
   #hud { position: fixed; top: 10px; left: 12px; right: 12px; display: flex;
          justify-content: space-between; pointer-events: none; font-variant-numeric: tabular-nums; }
   #clock { font-size: 28px; font-weight: 700; color: var(--gold); text-shadow: 0 0 8px #000; }
+  #hl { font-size: 13px; font-weight: 600; color: #ffd166; text-shadow: 0 0 6px #000;
+        max-width: 340px; min-height: 18px; }
   #nowplaying { max-width: 55%; text-align: right; text-shadow: 0 0 8px #000; }
   #nowplaying .t { color: var(--gold); font-weight: 600; }
   #banner { position: fixed; top: 52px; left: 12px; right: 12px; color: #ffb347;
@@ -47,6 +49,18 @@
   #drop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
           background: rgba(10,10,18,.85); font-size: 22px; color: var(--gold); z-index: 9; }
   body.dragging #drop { display: flex; }
+  .npcard { display: flex; gap: 8px; align-items: center; background: rgba(16,20,34,.88);
+    border: 1px solid #2a3452; border-radius: 8px; padding: 6px 8px; margin: 0 0 6px auto;
+    cursor: pointer; max-width: 380px; text-align: left; pointer-events: auto; }
+  .npcard:hover { border-color: var(--gold); }
+  .npcard img { width: 96px; aspect-ratio: 16/9; object-fit: cover; border-radius: 5px; flex: none; }
+  .npcard .nm { font-size: 12px; color: #fff; }
+  .npcard .nm.linked { color: var(--gold); }
+  .npcard .bd { font-size: 10px; color: var(--dim); margin-top: 2px; }
+  .badge { display: inline-block; border: 1px solid #39445c; border-radius: 4px;
+    padding: 0 4px; margin-right: 3px; }
+  .badge.fan { color: #ffd166; border-color: #ffd166; font-weight: 600; }
+  .cue.fanfx::after { content: "⤢"; font-size: 8px; vertical-align: super; color: #ffd166; }
   #detail { position: fixed; right: 12px; top: 56px; width: 336px; background: var(--panel);
             border: 1px solid var(--edge); border-radius: 10px; padding: 12px; z-index: 8;
             display: none; box-shadow: 0 8px 30px rgba(0,0,0,.6); }
@@ -62,13 +76,13 @@
 </head>
 <body>
 <canvas id="sky"></canvas>
-<div id="hud"><div id="clock">00:00.0</div><div id="nowplaying"></div></div>
+<div id="hud"><div><div id="clock">00:00.0</div><div id="hl"></div></div><div id="nowplaying"></div></div>
 <div id="banner"></div>
 <div id="drop">Drop the script CSV, the show MP3, and/or effects.json anywhere</div>
 <div id="detail"><button id="detailClose">✕</button><div id="detailBody"></div></div>
 
 <div id="deck">
-  <canvas id="timeline" style="width:100%;height:26px;display:block;border-radius:4px;background:#10101a;cursor:pointer"></canvas>
+  <canvas id="timeline" style="width:100%;height:44px;display:block;border-radius:4px;background:#10101a;cursor:pointer"></canvas>
   <div id="transport">
     <label class="file" id="csvLabel">Load script CSV<input type="file" id="csvInput" accept=".csv,text/csv"></label>
     <label class="file" id="audioLabel">Load show audio<input type="file" id="audioInput" accept="audio/*"></label>
@@ -187,6 +201,7 @@ function resize() {
 new ResizeObserver(resize).observe(sky); resize();
 
 const particles = [], rockets = [], launchQueue = [];   // launchQueue: {at, x, fx, big}
+const fanRays = [];   // {x, t0} — brief angled guide rays marking directional (fan) launches
 const rand = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
@@ -199,19 +214,38 @@ function stationX(ch, channels) {
 function scheduleEvent(ev, channels) {
   const { fx } = ev, sx = stationX(ev.ch, channels);
   const n = fx.shots, span = Math.max(fx.dur - 2, 0.5);
+  // Fans sweep like real Z-cakes: left->right, then right->left, alternating
+  // per pass. Mortar fans sweep per rack row (3 rows); cakes in rows of ~8.
+  const passLen = fx.fan ? (fx.mortar ? Math.max(Math.ceil(n / 3), 1) : Math.min(n, 8)) : 0;
   for (let i = 0; i < n; i++) {
     const frac = n === 1 ? 0 : i / (n - 1);
+    let fanF = 0.5;
+    if (fx.fan) {
+      const pass = Math.floor(i / passLen);
+      fanF = passLen <= 1 ? 0.5 : (i % passLen) / (passLen - 1);
+      if (pass % 2 === 1) fanF = 1 - fanF;   // reverse sweep on odd passes
+    }
     launchQueue.push({
       at: ev.t + frac * span + rand(-0.08, 0.08),
-      x: sx + (fx.fan ? (frac - 0.5) * W * 0.22 : rand(-30, 30)),
-      angle: fx.fan ? (frac - 0.5) * 0.9 : rand(-0.12, 0.12),
+      // fans fire from ONE base point, projected at angles (owner-corrected):
+      // shared origin, trajectories diverge in flight via launch angle
+      x: sx + (fx.fan ? rand(-8, 8) : rand(-30, 30)),
+      angle: fx.fan ? (fanF - 0.5) * 1.1 : rand(-0.12, 0.12),
       fx, big: fx.mortar,
     });
   }
   launchQueue.sort((a, b) => a.at - b.at);
+  if (fx.fan) fanRays.push({ x: sx, t0: ev.t });
 }
 
 function launch(l) {
+  if (l.fx.type === "strobe") {   // ground strobe pot: stationary white flashes, nothing aerial
+    spawn(l.x + rand(-7, 7), GROUND - 7, { vx: 0, vy: 0, color: "#ffffff",
+      size: rand(12, 24), max: 0.15, grav: 0, drag: 1, flash: true });
+    spawn(l.x, GROUND - 5, { vx: 0, vy: 0, color: "#e8ecff",
+      size: rand(4, 7), max: 0.5, grav: 0, drag: 1 });
+    return;
+  }
   if (l.fx.type === "mine") { burst(l.x, GROUND, l.fx, l.big, true); return; }
   let apex = rand(H * 0.18, H * 0.45) - (l.big ? H * 0.1 : 0);
   if (l.fx.height === "low") apex = rand(H * 0.55, H * 0.72);
@@ -277,6 +311,22 @@ function stepFrame(dt) {
     ctx.fillStyle = "#8a93a8"; ctx.font = "10px system-ui"; ctx.textAlign = "center";
     ctx.fillText("CH " + ch, x, GROUND + 14);
   }
+  // fan guide rays — make directional launches unmistakable for ~2s
+  for (let i = fanRays.length - 1; i >= 0; i--) {
+    const fr = fanRays[i], age = state.t - fr.t0;
+    if (age > 2.0) { fanRays.splice(i, 1); continue; }
+    if (age < 0) continue;
+    ctx.save();
+    ctx.globalAlpha = 0.5 * (1 - age / 2.0);
+    ctx.strokeStyle = "#ffd166"; ctx.lineWidth = 1; ctx.setLineDash([4, 5]);
+    for (let k = -2; k <= 2; k++) {
+      const ang = k * 0.225;                     // mirrors the ±0.45 rad launch spread
+      ctx.beginPath(); ctx.moveTo(fr.x, GROUND);
+      ctx.lineTo(fr.x + Math.sin(ang) * 140, GROUND - Math.cos(ang) * 140);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
   ctx.globalCompositeOperation = "lighter";      // additive glow for all pyro
   const s = 30 * dt * 2;      // physics step scale
   for (let i = rockets.length - 1; i >= 0; i--) {
@@ -337,7 +387,9 @@ function applyEffects() {
 function markLinkedCues() {
   for (const ev of state.events) {
     const el = cueEls[ev.ch + ":" + ev.cue];
-    if (el && ev.fx.video) el.classList.add("linked");
+    if (!el) continue;
+    if (ev.fx.video) el.classList.add("linked");
+    if (ev.fx.fan) el.classList.add("fanfx");
   }
 }
 function loadEffectsText(text, name) {
@@ -352,7 +404,9 @@ function loadEffectsText(text, name) {
 }
 const ytId = url => (/(?:v=|youtu\.be\/|\/embed\/|\/shorts\/)([\w-]{11})/.exec(url || "") || [])[1];
 function showDetail(ch, cue) {
-  const ev = state.events.find(e => e.ch === ch && e.cue === cue);
+  showDetailEv(state.events.find(e => e.ch === ch && e.cue === cue));
+}
+function showDetailEv(ev) {
   if (!ev) return;
   const vid = ytId(ev.fx.video);
   $("detailBody").innerHTML =
@@ -390,15 +444,34 @@ function tickClock(dt) {
 let lastHud = 0;
 function updateHud() {
   $("clock").textContent = fmtClock(state.t);
+  if (state.highlights) {
+    const cur = state.highlights.filter(hl => state.t >= hl.t - 0.3 && state.t < hl.t + 3.5).pop();
+    $("hl").textContent = cur ? "★ " + cur.label + "  (" + fmtClock(cur.t, false) + ")" : "";
+  }
   if (!seekDragging) $("seek").value = state.t;
   drawTimeline();
   const now = performance.now();
   if (now - lastHud < 120) return;             // throttle the DOM-heavy parts
   lastHud = now;
-  // now playing = most recent fired events (within their duration)
-  const live = state.events.filter(e => e.fired && state.t - e.t < e.fx.dur)
-                           .slice(-3).map(e => `<span class="t">Ch${e.ch}·C${e.cue}</span> ${escapeHtml(shortDesc(e.desc))}`);
-  $("nowplaying").innerHTML = live.join("<br>");
+  // now playing = most recent fired events (within their duration), as rich info cards.
+  // Only re-render when the live SET changes — rebuilding every HUD tick destroys
+  // the node mid-click and makes the cards unclickable.
+  const live = state.events.filter(e => e.fired && state.t - e.t < e.fx.dur).slice(-3);
+  const npKey = live.map(e => state.events.indexOf(e)).join(",");
+  if (npKey !== updateHud.npKey) {
+    updateHud.npKey = npKey;
+    $("nowplaying").innerHTML = live.map(e => {
+      const vid = ytId(e.fx.video);
+      const thumb = vid ? `<img src="https://i.ytimg.com/vi/${vid}/mqdefault.jpg" alt="" loading="lazy">` : "";
+      const badges = `<span class="badge">${e.fx.type}</span>` +
+        (e.fx.fan ? `<span class="badge fan">⤢ FAN</span>` : "") +
+        `<span class="badge">${e.fx.palette}</span>` +
+        (e.fx.height ? `<span class="badge">${e.fx.height}</span>` : "");
+      return `<div class="npcard" data-i="${state.events.indexOf(e)}">${thumb}<div>
+        <div class="nm${vid ? " linked" : ""}"><span class="t">Ch${e.ch}·C${e.cue}</span> ${escapeHtml(shortDesc(e.desc))}</div>
+        <div class="bd">${badges}${vid ? " · click for demo video" : ""}</div></div></div>`;
+    }).join("");
+  }
   const up = state.events.filter(e => !e.fired).slice(0, 3)
       .map(e => `<b>${fmtClock(e.t)}</b> Ch${e.ch}·C${e.cue} ${escapeHtml(shortDesc(e.desc))}`);
   $("next").innerHTML = up.length ? "Next: " + up.join(" &nbsp;•&nbsp; ") :
@@ -413,24 +486,64 @@ function updateHud() {
 
 const CH_COLORS = ["#3ddc84", "#4de1ff", "#ffd166", "#ff2ec7", "#b14dff", "#ff9f1c"];
 const tl = $("timeline"), tctx = tl.getContext("2d");
+const SEG_COLORS = ["#2a4d8f", "#8f2a3e", "#2a8f5b", "#7a5c1e", "#5c2a8f", "#8f6f2a", "#2a7a8f", "#8f2a7a"];
 function drawTimeline() {
-  const w = tl.clientWidth, h = 26;
+  const w = tl.clientWidth, h = 44, bandH = 16;
   if (tl.width !== w * devicePixelRatio) { tl.width = w * devicePixelRatio; tl.height = h * devicePixelRatio; }
   tctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
   tctx.fillStyle = "#10101a"; tctx.fillRect(0, 0, w, h);
-  if (!state.events.length || !state.duration) return;
-  const lane = (h - 6) / Math.max(state.channels.length, 1);
-  for (const ev of state.events) {
-    const ci = state.channels.indexOf(ev.ch);
-    tctx.fillStyle = ev.fired ? "#5a2a34" : CH_COLORS[ci % CH_COLORS.length];
-    tctx.fillRect(ev.t / state.duration * w, 3 + ci * lane, 2, Math.max(lane - 2, 3));
+  if (!state.duration) return;
+  // song/segment bands from the mix recipe (?recipe= param)
+  if (state.segments) {
+    tctx.font = "9px system-ui"; tctx.textBaseline = "middle";
+    state.segments.forEach((sg, i) => {
+      const x0 = sg.start / state.duration * w, x1 = sg.end / state.duration * w;
+      tctx.fillStyle = SEG_COLORS[i % SEG_COLORS.length];
+      tctx.globalAlpha = 0.8;
+      tctx.fillRect(x0, 1, x1 - x0 - 1, bandH - 2);   // 1px gap = visible cut line
+      tctx.globalAlpha = 1;
+      const label = sg.name, tw = tctx.measureText(label).width;
+      if (tw < x1 - x0 - 6) {
+        tctx.fillStyle = "#fff";
+        tctx.fillText(label, x0 + 4, 1 + bandH / 2);
+      }
+      // cut boundary marker
+      tctx.fillStyle = "#ffd166";
+      tctx.fillRect(x1 - 1, 0, 1, bandH);
+    });
+  }
+  if (state.highlights) {
+    tctx.font = "11px system-ui"; tctx.textAlign = "center"; tctx.textBaseline = "middle";
+    for (const hl of state.highlights) {
+      const x = hl.t / state.duration * w;
+      tctx.fillStyle = hl.kind === "sync" ? "#ff2ec7" : hl.kind === "sfx" ? "#4de1ff"
+                     : hl.kind === "exit" ? "#8a93a8" : "#ffd166";
+      tctx.fillText("★", x, 8);
+    }
+    tctx.textAlign = "left";
+  }
+  if (state.events.length) {
+    const top = state.segments ? bandH + 2 : 3;
+    const lane = (h - top - 3) / Math.max(state.channels.length, 1);
+    for (const ev of state.events) {
+      const ci = state.channels.indexOf(ev.ch);
+      tctx.fillStyle = ev.fired ? "#5a2a34" : CH_COLORS[ci % CH_COLORS.length];
+      tctx.fillRect(ev.t / state.duration * w, top + ci * lane, 2, Math.max(lane - 2, 3));
+    }
   }
   tctx.fillStyle = "#ffffff";
   tctx.fillRect(state.t / state.duration * w, 0, 1.5, h);
 }
 tl.addEventListener("click", e => {
   if (!state.duration) return;
-  state.t = (e.offsetX / tl.clientWidth) * state.duration;
+  let t = (e.offsetX / tl.clientWidth) * state.duration;
+  if (state.highlights) {                       // snap to a star within 8px
+    const tol = 8 / tl.clientWidth * state.duration;
+    const near = state.highlights.reduce((b, hl) =>
+      Math.abs(hl.t - t) < Math.abs((b?.t ?? 1e9) - t) ? hl : b, null);
+    if (near && Math.abs(near.t - t) <= tol) t = Math.max(near.t - 1.5, 0); // land just before it
+  }
+  state.t = t;
   if (state.audio) state.audio.currentTime = state.t;
   resetShow(false);
 });
@@ -462,7 +575,7 @@ function buildStations() {
 function resetShow(toZero = true) {
   if (toZero) { state.t = 0; if (state.audio) state.audio.currentTime = 0; }
   for (const e of state.events) { e.fired = e.t < state.t; e.firedAt = e.t; }
-  launchQueue.length = 0; particles.length = 0; rockets.length = 0;
+  launchQueue.length = 0; particles.length = 0; rockets.length = 0; fanRays.length = 0;
   updateHud();
 }
 
@@ -508,6 +621,10 @@ $("fxInput").addEventListener("change", e => {
   f.text().then(t => loadEffectsText(t, f.name));
 });
 $("detailClose").addEventListener("click", () => $("detail").classList.remove("open"));
+$("nowplaying").addEventListener("click", e => {   // delegated: survives card re-renders
+  const card = e.target.closest(".npcard");
+  if (card) showDetailEv(state.events[+card.dataset.i]);
+});
 $("playBtn").addEventListener("click", () => {
   state.playing = !state.playing;
   if (state.audio) state.playing ? state.audio.play() : state.audio.pause();
@@ -574,6 +691,57 @@ window.rehearsal = {
     total: state.events.length, particles: particles.length, duration: state.duration,
   }),
 };
+
+/* ---------- URL auto-load (?script=&audio=&effects=, repo-relative) ----------
+   Only works over http(s) — browsers block fetch on file://. The per-show
+   rehearse.cmd launcher starts a local server and opens this page with the
+   right params, so rehearsal is one double-click from the show folder.   */
+(async () => {
+  if (!/^https?:$/.test(location.protocol)) return;
+  const q = new URLSearchParams(location.search);
+  const fetchOk = async (u) => {
+    // repo-relative params resolve from the server root, not this page's dir
+    if (!/^(https?:)?\//.test(u)) u = "/" + u;
+    // cache-bust: the mix/script are rebuilt often; stale audio is worse
+    // than a re-download on a localhost server
+    u += (u.includes("?") ? "&" : "?") + "v=" + Date.now();
+    const r = await fetch(u, { cache: "no-store" });
+    if (!r.ok) throw new Error(u.split("?")[0] + " -> HTTP " + r.status);
+    return r;
+  };
+  try {
+    if (q.get("script")) {
+      const r = await fetchOk(q.get("script"));
+      loadCsvText(await r.text(), q.get("script").split("/").pop());
+    }
+    if (q.get("effects")) {
+      const r = await fetchOk(q.get("effects"));
+      loadEffectsText(await r.text(), q.get("effects").split("/").pop());
+    }
+    if (q.get("audio")) {
+      const r = await fetchOk(q.get("audio"));
+      const name = q.get("audio").split("/").pop();
+      loadAudioFile(new File([await r.blob()], name, { type: "audio/mpeg" }));
+    }
+    if (q.get("highlights")) {   // musical landmarks -> stars on the timeline
+      const r = await fetchOk(q.get("highlights"));
+      state.highlights = await r.json();
+      drawTimeline();
+    }
+    if (q.get("recipe")) {   // mix-recipe.json -> labeled song bands on the timeline
+      const r = await fetchOk(q.get("recipe"));
+      const recipe = await r.json();
+      state.segments = (recipe.items || []).map(it => ({
+        name: it.name.split(" (")[0].replace(/-/g, " "),
+        start: it.at,
+        end: it.at + (it.src_end - (it.src_start || 0)),
+      }));
+      drawTimeline();
+    }
+  } catch (err) {
+    $("banner").textContent = "auto-load failed: " + err.message;
+  }
+})();
 </script>
 </body>
 </html>
