@@ -5,7 +5,7 @@
 | Cue | Firework |
 |-----|----------|
 | 1 | Nothing But Balls #1 |
-| 2 | American Eagle |
+| 2 | War Cry #2 |
 | 3 | MORTARS 4×4 |
 | 4 | Rainbow Crush |
 | 5 | MORTARS 3×6 fan |
@@ -32,7 +32,7 @@
 | 6 | Zeus |
 | 7 | Juggernaut |
 | 8 | Neon Pearls #2 |
-| 9 | War Cry |
+| 9 | War Cry #1 |
 | 10 | God of Thunder |
 | 11 | MORTARS 3×7 fan |
 | 12 | Bad Ass Brocade #1 (LEFT) |

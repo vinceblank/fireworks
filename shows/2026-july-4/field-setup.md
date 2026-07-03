@@ -25,10 +25,10 @@
         ↑ all fans/angled racks aim ACROSS this line, never at it ↑
 
    [STATION 1 · CH01]                                [STATION 2 · CH02]
-   NBB#1  AmEagle(fan→)                          (←fan)NBB#2  NeonSwarm
+   NBB#1  WarCry#2(fan→)                          (←fan)NBB#2  NeonSwarm
    RainbowCrush  CaptMarvel                       Leviathan  TheDuel
    WildWillow  NeonPearls#1(fan→)          (←fan)NeonPearls#2  BlackPanther
-   NuclearRain  MNW(fan→)  Insurgent              Zeus  Juggernaut  WarCry
+   NuclearRain  MNW(fan→)  Insurgent              Zeus  Juggernaut  WarCry#1
    WOW  Strobe(front, visible)                    GodOfThunder
 
               [MORTAR RACKS — CENTER REAR, staked & braced]
@@ -48,7 +48,7 @@
 | Cue | Fires (script clock) | Firework | Notes |
 |-----|------------|----------|-------|
 | 1 | STEP ② | Nothing But Balls #1 | PAIRED with Ch2-C1 (fires same moment) |
-| 2 | 0:33 | American Eagle | LOW fan — aim across audience line |
+| 2 | 0:33 | War Cry #2 | whistle fan — aim across audience line |
 | 3 | 1:30.5 | **Mortars 4×4** | 16 shells: 9" yellow (3) + 44" green (13) |
 | 4 | 2:29 | Rainbow Crush | |
 | 5 | 3:47.3 | **Mortars 3×6 fan** | 18 shells: 15" green/row, yellow-bridged, ONE e-match |
@@ -75,7 +75,7 @@
 | 6 | 4:46.1 | Zeus | anchors "ALL ABOARD!" |
 | 7 | 6:00 | Juggernaut | |
 | 8 | 7:15.1 | Neon Pearls #2 | PAIRED with Ch1-C9; fan aim across |
-| 9 | 7:44 | War Cry | fanning whistles — aim across |
+| 9 | 7:44 | War Cry #1 | fanning whistles — aim across |
 | 10 | 7:59.2 | God of Thunder | |
 | 11 | 8:22 | **Mortars 3×7 fan** | 21 shells: 15" green/row, yellow-bridged, ONE e-match |
 | 12 | 9:43.75 | Bad Ass Brocade #1 (LEFT) | fires with Ch1-C14 & Ch2-C13 |

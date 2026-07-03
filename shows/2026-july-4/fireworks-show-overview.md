@@ -26,7 +26,7 @@ throughout; only between-song gaps go quiet.
 | STEP① | 1 | 16 | Strobe | 1 / ~90s | PRESS 1 (pre-show): show-live beacon; burns into the opener |
 | STEP② 0:06 | 1 | 1 | Nothing But Balls #1 | 100 / 35s | **PRESS 2 = the show**: paired wall erupts 2 s before the first lyric + the clock starts |
 | 0:06 | 2  | 1   | Nothing But Balls #2 | 100 / 35s | timed at 00:00 — fires with your press |
-| 0:39 | 1  | 2   | American Eagle | 170 / 35s | LOW R/W/B fan ON ★AK chorus 1 |
+| 0:39 | 1  | 2   | War Cry #2 | 56 / 34s | Fanning whistles rip ON ★AK chorus 1 (physical swap: receipt's "American Eagle" is a 2nd War Cry) |
 | 1:18 | 2  | 2   | Leviathan | 16 / 25s | High+low breaks bridging to the chorus-2 burst (Insurgent moved to the false finale) |
 | 1:36.5 | 1 | 3  | **Mortars 4×4** (9" yellow + 44" green) | 16 / ~1:45 | 3-shell BURST lands ~1:42 ON ★AK chorus 2, then simmers every ~8.3 s across the song seam to ~3:23 |
 | 1:42 | 2  | 3   | Neon Swarm | 16 / 23s | LOW swarm with the chorus-2 burst |
@@ -58,7 +58,7 @@ throughout; only between-song gaps go quiet.
 |------|----|-----|------|-------------|-----------------|
 | 7:21.1 | 1 | 9  | Neon Pearls #1 | 100 / 39s | **PAIRED WALL** at the chant opening (user request) |
 | 7:21.1 | 2 | 8  | Neon Pearls #2 | 100 / 39s | fired together — low fan walls under the chants |
-| 7:50 | 2  | 9   | War Cry | 56 / 34s | Fanning whistles SCREAM under the build — tension texture (moved from CT) |
+| 7:50 | 2  | 9   | War Cry #1 | 56 / 34s | Fanning whistles SCREAM under the build — echoes the 0:39 opener whistles |
 | 7:25 | 1  | 10  | **Mortars 1×21 bed** (43" green) | 21 / ~1:40 | Breaks ~7:30.5 → ~9:07: continuous crown under the ENTIRE build — this is what makes it read as the real finale |
 | 7:55 | 1  | 11  | Magical Neon Willow | 26 / 48s | Hanging willows over the ★8:05/★8:19 build hits |
 | 8:05.2 | 2 | 10 | God of Thunder | 23 / 23s | Name-match ON ★the 8:05.2 build hit |
@@ -81,7 +81,7 @@ throughout; only between-song gaps go quiet.
 
 ## Footer
 
-- **Cake-exact moments** (instant fire on confirmed ★highlights): AE 0:39,
+- **Cake-exact moments** (instant fire on confirmed ★highlights): WC#2 0:39,
   Neon Swarm 1:42, Duel 3:17.5, BP 3:58.8, Zeus 4:52.1, Juggernaut 6:06,
   NP wall 7:21.1, GoT 8:05.2, Insurgent 8:19.2, WOW end 9:13,
   BAB triple wall ON the slam 9:51.8. Featured: Nuclear Rain standalone 4:20.

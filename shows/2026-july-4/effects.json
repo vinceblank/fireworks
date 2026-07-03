@@ -1,232 +1,222 @@
 [
-  {
-    "match": "american eagle",
-    "video": "https://www.youtube.com/watch?v=eCvnPdo9bPo",
-    "type": "mine",
-    "fan": true,
-    "palette": "rwb",
-    "height": "low",
-    "notes": "low sparkling R/W/B ground-cover fan, exciting finish",
-    "verified": true
-  },
-  {
-    "match": "nothing but balls",
-    "video": "https://www.youtube.com/watch?v=TMYgbz_rFrI",
-    "type": "crackle",
-    "fan": false,
-    "palette": "mixed",
-    "height": "low",
-    "notes": "200g repeater, 100 shots of nothing but crackling colorful balls (vendor page links this exact demo video)",
-    "verified": true
-  },
-  {
-    "match": "insurgent",
-    "video": "https://www.youtube.com/watch?v=hhfBiNy22s8",
-    "type": "crackle",
-    "fan": false,
-    "palette": "mixed",
-    "height": "mid",
-    "notes": "200g repeater (SKU 301183); vendor page has no effect text, only the official demo video - effect fields inferred",
-    "verified": true
-  },
-  {
-    "match": "the duel",
-    "video": "https://www.youtube.com/watch?v=Apq2T4_bCSg",
-    "type": "peony",
-    "fan": false,
-    "palette": "rwb",
-    "height": "mid",
-    "notes": "500g repeater, 200 shots: red glittering tails and blue stars, red/blue star volleys, crackling chrysanthemum finish",
-    "verified": true
-  },
-  {
-    "match": "neon swarm",
-    "video": "https://www.youtube.com/watch?v=4T1t16PdGd0",
-    "type": "comet",
-    "fan": false,
-    "palette": "neon",
-    "height": "low",
-    "notes": "200g repeater (SKU 8761); swarming neon effects inferred from name - vendor page carries only the demo video",
-    "verified": true
-  },
-  {
-    "match": "black panther",
-    "video": null,
-    "type": "peony",
-    "fan": false,
-    "palette": "mixed",
-    "height": "high",
-    "notes": "One of six 500g cakes in the Pro Fireworks Avengers Assortment; no solo demo - assortment demo at youtube.com/watch?v=H4hMau0zQ6A covers the 6-pack",
-    "verified": false
-  },
-  {
-    "match": "rainbow crush",
-    "video": "https://www.youtube.com/watch?v=ESKvuom4Np4",
-    "type": "peony",
-    "fan": false,
-    "palette": "rainbow",
-    "height": "mid",
-    "notes": "New-for-2026 500g repeater (SKU 06516); multicolor rainbow breaks inferred from name, official demo embedded on product page",
-    "verified": true
-  },
-  {
-    "match": "zeus",
-    "video": "https://www.youtube.com/watch?v=kvAlu4HfwMw",
-    "type": "mine",
-    "fan": false,
-    "palette": "mixed",
-    "height": "mid",
-    "notes": "500g repeater (SKU 84512); gold glitter mines with blue stars rising to colorful breaks and crackle, 3-shot finale",
-    "verified": true
-  },
-  {
-    "match": "magical neon willow",
-    "video": "https://www.youtube.com/watch?v=poZq0n2N0G0",
-    "type": "willow",
-    "fan": true,
-    "palette": "neon",
-    "height": "high",
-    "notes": "Vendor: vibrant neon breaks into large hanging willows with fanned shots mixed in; ~26 shots, 500g",
-    "verified": true
-  },
-  {
-    "match": "war cry",
-    "video": "https://www.youtube.com/watch?v=J0_yilAGW7k",
-    "type": "whistle",
-    "fan": true,
-    "palette": "mixed",
-    "height": "low",
-    "notes": "200g repeater (SKU 543); USER 2025 desc: 'Fanning crackles and whistles' -> fan; official demo verified",
-    "verified": true
-  },
-  {
-    "match": "captain marvel",
-    "video": null,
-    "type": "willow",
-    "fan": false,
-    "palette": "mixed",
-    "height": "high",
-    "notes": "25-shot 500g Avengers-series cake (Black Scorpion CLA4693): loud sharp whistle tails up to brocade crowns with neon colors; only assortment-level demo exists",
-    "verified": false
-  },
-  {
-    "match": "juggernaut",
-    "video": "https://www.youtube.com/watch?v=RDgvSJcB-A4",
-    "type": "willow",
-    "fan": false,
-    "palette": "gold",
-    "height": "high",
-    "notes": "Black Diamond 500g repeater, 22 shots in 0:37 - big gold-orange brocade/willow breaks with red accents, new for 2026",
-    "verified": true
-  },
-  {
-    "match": "neon pearls",
-    "video": "https://www.youtube.com/watch?v=YdpVeCLxt6U",
-    "type": "comet",
-    "fan": true,
-    "palette": "neon",
-    "height": "low",
-    "notes": "200g strip cake, 100 rapid fanned shots of colorful neon pearls in 0:39",
-    "verified": true
-  },
-  {
-    "match": "leviathan",
-    "video": null,
-    "type": "peony",
-    "fan": false,
-    "palette": "mixed",
-    "height": "high",
-    "notes": "Not found at Pro Fireworks (no product page or channel video); name suggests a large multi-effect finale cake - fields are best-guess",
-    "verified": false
-  },
-  {
-    "match": "god of thunder",
-    "video": "https://www.youtube.com/watch?v=kiCQWslVNog",
-    "type": "crackle",
-    "fan": true,
-    "palette": "silver",
-    "height": "high",
-    "notes": "Black Diamond 500g repeater, 23 shots in 0:23 (fast finale pace) - orange brocade bursting into a massive silver crackle cloud; USER 2025 desc: 'breaks with fans' -> fan",
-    "verified": true
-  },
-  {
-    "match": "wild willow",
-    "video": "https://www.youtube.com/watch?v=BcxT9v1ItmE",
-    "type": "willow",
-    "fan": false,
-    "palette": "mixed",
-    "height": "mid",
-    "notes": "Black Diamond 500g repeater, 25 shots in 0:42 - drooping willow breaks in mixed green/red/pink tones",
-    "verified": true
-  },
-  {
-    "match": "wow",
-    "video": "https://www.youtube.com/watch?v=AvWIXlR600A",
-    "type": "peony",
-    "fan": false,
-    "palette": "mixed",
-    "height": "mid",
-    "notes": "#Wow - Pro Fireworks best-selling 49-shot finale cake; rapid mixed-color finale volleys (vendor page embeds this video)",
-    "verified": true
-  },
-  {
-    "match": "nuclear rain",
-    "video": "https://www.youtube.com/watch?v=sHwjnznhC34",
-    "type": "willow",
-    "fan": false,
-    "palette": "green",
-    "height": "high",
-    "notes": "Official Nuclear Rain demo (embedded on vendor page); glowing green bursts raining down as falling willow trails",
-    "verified": true
-  },
-  {
-    "match": "bad ass brocade",
-    "video": "https://www.youtube.com/watch?v=b_OFgk-XcoQ",
-    "type": "willow",
-    "fan": true,
-    "palette": "gold",
-    "height": "high",
-    "notes": "Badass Brocade Case - 250-shot compound 3-pack; non-stop blitz of golden brocade tails saturating the horizon with R/W/B accents",
-    "verified": true
-  },
-  {
-    "match": "pro shells",
-    "video": "https://www.youtube.com/watch?v=SQLj-42y87o",
-    "type": "peony",
-    "fan": null,
-    "palette": "neon",
-    "height": "high",
-    "notes": "Red Box Pro Shells - 24-pack of hard-hitting 1.75in canister shells with bright neon colors, strobes, and chrysanthemum breaks; fan=null on purpose: rack geometry varies per group, cue desc decides",
-    "verified": true
-  },
-  {
-    "match": "snake tails",
-    "video": "https://www.youtube.com/watch?v=s-Lt75Lhstk",
-    "type": "comet",
-    "fan": false,
-    "palette": "mixed",
-    "height": "high",
-    "notes": "Snake Tails 5in canister shells; NOTE: ZERO in 2026 stock - remove from show design",
-    "verified": true
-  },
-  {
-    "match": "divine beast",
-    "video": "https://www.youtube.com/watch?v=89Q6VEVH72s",
-    "type": "peony",
-    "fan": null,
-    "palette": "mixed",
-    "height": "high",
-    "notes": "Divine Beast 6in canister shells; 2026 stock: 24 shells (user-confirmed); fan=null on purpose: rack geometry varies per group, cue desc decides",
-    "verified": true
-  },
-  {
-    "match": "strobe",
-    "video": null,
-    "type": "strobe",
-    "fan": false,
-    "palette": "silver",
-    "height": "low",
-    "notes": "single ground strobe pot - pre-show 'show live' beacon; wired Ch1 Cue 16, fired MANUALLY before the music (can't be scripted: it burns before script t=0)",
-    "verified": true
-  }
+ {
+  "match": "nothing but balls",
+  "video": "https://www.youtube.com/watch?v=TMYgbz_rFrI",
+  "type": "crackle",
+  "fan": false,
+  "palette": "mixed",
+  "height": "low",
+  "notes": "200g repeater, 100 shots of nothing but crackling colorful balls (vendor page links this exact demo video)",
+  "verified": true
+ },
+ {
+  "match": "insurgent",
+  "video": "https://www.youtube.com/watch?v=hhfBiNy22s8",
+  "type": "crackle",
+  "fan": false,
+  "palette": "mixed",
+  "height": "mid",
+  "notes": "200g repeater (SKU 301183); vendor page has no effect text, only the official demo video - effect fields inferred",
+  "verified": true
+ },
+ {
+  "match": "the duel",
+  "video": "https://www.youtube.com/watch?v=Apq2T4_bCSg",
+  "type": "peony",
+  "fan": false,
+  "palette": "rwb",
+  "height": "mid",
+  "notes": "500g repeater, 200 shots: red glittering tails and blue stars, red/blue star volleys, crackling chrysanthemum finish",
+  "verified": true
+ },
+ {
+  "match": "neon swarm",
+  "video": "https://www.youtube.com/watch?v=4T1t16PdGd0",
+  "type": "comet",
+  "fan": false,
+  "palette": "neon",
+  "height": "low",
+  "notes": "200g repeater (SKU 8761); swarming neon effects inferred from name - vendor page carries only the demo video",
+  "verified": true
+ },
+ {
+  "match": "black panther",
+  "video": null,
+  "type": "peony",
+  "fan": false,
+  "palette": "mixed",
+  "height": "high",
+  "notes": "One of six 500g cakes in the Pro Fireworks Avengers Assortment; no solo demo - assortment demo at youtube.com/watch?v=H4hMau0zQ6A covers the 6-pack",
+  "verified": false
+ },
+ {
+  "match": "rainbow crush",
+  "video": "https://www.youtube.com/watch?v=ESKvuom4Np4",
+  "type": "peony",
+  "fan": false,
+  "palette": "rainbow",
+  "height": "mid",
+  "notes": "New-for-2026 500g repeater (SKU 06516); multicolor rainbow breaks inferred from name, official demo embedded on product page",
+  "verified": true
+ },
+ {
+  "match": "zeus",
+  "video": "https://www.youtube.com/watch?v=kvAlu4HfwMw",
+  "type": "mine",
+  "fan": false,
+  "palette": "mixed",
+  "height": "mid",
+  "notes": "500g repeater (SKU 84512); gold glitter mines with blue stars rising to colorful breaks and crackle, 3-shot finale",
+  "verified": true
+ },
+ {
+  "match": "magical neon willow",
+  "video": "https://www.youtube.com/watch?v=poZq0n2N0G0",
+  "type": "willow",
+  "fan": true,
+  "palette": "neon",
+  "height": "high",
+  "notes": "Vendor: vibrant neon breaks into large hanging willows with fanned shots mixed in; ~26 shots, 500g",
+  "verified": true
+ },
+ {
+  "match": "war cry",
+  "video": "https://www.youtube.com/watch?v=J0_yilAGW7k",
+  "type": "whistle",
+  "fan": true,
+  "palette": "mixed",
+  "height": "low",
+  "notes": "200g repeater (SKU 543); USER 2025 desc: 'Fanning crackles and whistles' -> fan; official demo verified",
+  "verified": true
+ },
+ {
+  "match": "captain marvel",
+  "video": null,
+  "type": "willow",
+  "fan": false,
+  "palette": "mixed",
+  "height": "high",
+  "notes": "25-shot 500g Avengers-series cake (Black Scorpion CLA4693): loud sharp whistle tails up to brocade crowns with neon colors; only assortment-level demo exists",
+  "verified": false
+ },
+ {
+  "match": "juggernaut",
+  "video": "https://www.youtube.com/watch?v=RDgvSJcB-A4",
+  "type": "willow",
+  "fan": false,
+  "palette": "gold",
+  "height": "high",
+  "notes": "Black Diamond 500g repeater, 22 shots in 0:37 - big gold-orange brocade/willow breaks with red accents, new for 2026",
+  "verified": true
+ },
+ {
+  "match": "neon pearls",
+  "video": "https://www.youtube.com/watch?v=YdpVeCLxt6U",
+  "type": "comet",
+  "fan": true,
+  "palette": "neon",
+  "height": "low",
+  "notes": "200g strip cake, 100 rapid fanned shots of colorful neon pearls in 0:39",
+  "verified": true
+ },
+ {
+  "match": "leviathan",
+  "video": null,
+  "type": "peony",
+  "fan": false,
+  "palette": "mixed",
+  "height": "high",
+  "notes": "Not found at Pro Fireworks (no product page or channel video); name suggests a large multi-effect finale cake - fields are best-guess",
+  "verified": false
+ },
+ {
+  "match": "god of thunder",
+  "video": "https://www.youtube.com/watch?v=kiCQWslVNog",
+  "type": "crackle",
+  "fan": true,
+  "palette": "silver",
+  "height": "high",
+  "notes": "Black Diamond 500g repeater, 23 shots in 0:23 (fast finale pace) - orange brocade bursting into a massive silver crackle cloud; USER 2025 desc: 'breaks with fans' -> fan",
+  "verified": true
+ },
+ {
+  "match": "wild willow",
+  "video": "https://www.youtube.com/watch?v=BcxT9v1ItmE",
+  "type": "willow",
+  "fan": false,
+  "palette": "mixed",
+  "height": "mid",
+  "notes": "Black Diamond 500g repeater, 25 shots in 0:42 - drooping willow breaks in mixed green/red/pink tones",
+  "verified": true
+ },
+ {
+  "match": "wow",
+  "video": "https://www.youtube.com/watch?v=AvWIXlR600A",
+  "type": "peony",
+  "fan": false,
+  "palette": "mixed",
+  "height": "mid",
+  "notes": "#Wow - Pro Fireworks best-selling 49-shot finale cake; rapid mixed-color finale volleys (vendor page embeds this video)",
+  "verified": true
+ },
+ {
+  "match": "nuclear rain",
+  "video": "https://www.youtube.com/watch?v=sHwjnznhC34",
+  "type": "willow",
+  "fan": false,
+  "palette": "green",
+  "height": "high",
+  "notes": "Official Nuclear Rain demo (embedded on vendor page); glowing green bursts raining down as falling willow trails",
+  "verified": true
+ },
+ {
+  "match": "bad ass brocade",
+  "video": "https://www.youtube.com/watch?v=b_OFgk-XcoQ",
+  "type": "willow",
+  "fan": true,
+  "palette": "gold",
+  "height": "high",
+  "notes": "Badass Brocade Case - 250-shot compound 3-pack; non-stop blitz of golden brocade tails saturating the horizon with R/W/B accents",
+  "verified": true
+ },
+ {
+  "match": "pro shells",
+  "video": "https://www.youtube.com/watch?v=SQLj-42y87o",
+  "type": "peony",
+  "fan": null,
+  "palette": "neon",
+  "height": "high",
+  "notes": "Red Box Pro Shells - 24-pack of hard-hitting 1.75in canister shells with bright neon colors, strobes, and chrysanthemum breaks; fan=null on purpose: rack geometry varies per group, cue desc decides",
+  "verified": true
+ },
+ {
+  "match": "snake tails",
+  "video": "https://www.youtube.com/watch?v=s-Lt75Lhstk",
+  "type": "comet",
+  "fan": false,
+  "palette": "mixed",
+  "height": "high",
+  "notes": "Snake Tails 5in canister shells; NOTE: ZERO in 2026 stock - remove from show design",
+  "verified": true
+ },
+ {
+  "match": "divine beast",
+  "video": "https://www.youtube.com/watch?v=89Q6VEVH72s",
+  "type": "peony",
+  "fan": null,
+  "palette": "mixed",
+  "height": "high",
+  "notes": "Divine Beast 6in canister shells; 2026 stock: 24 shells (user-confirmed); fan=null on purpose: rack geometry varies per group, cue desc decides",
+  "verified": true
+ },
+ {
+  "match": "strobe",
+  "video": null,
+  "type": "strobe",
+  "fan": false,
+  "palette": "silver",
+  "height": "low",
+  "notes": "single ground strobe pot - pre-show 'show live' beacon; wired Ch1 Cue 16, fired MANUALLY before the music (can't be scripted: it burns before script t=0)",
+  "verified": true
+ }
 ]
