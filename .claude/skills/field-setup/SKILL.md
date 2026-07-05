@@ -64,6 +64,19 @@ Structure, in this order (setup happens in this order too):
      catch-up, and one +/− nudge.
    - Keyswitch discipline note: modules stay keyed TEST during real
      wiring days; ARM only at dusk as the final step.
+   - **HARD LIMIT of this dry-run (2026 failure lesson): empty terminals
+     draw no current, so it can NEVER catch power-delivery problems.**
+     The 2026 show passed every bench test and continuity check, then
+     ~40% of cues failed to fire — module batteries sagged under real
+     firing load (continuity tests with milliamps; firing takes amps).
+8. **Show-day POWER checklist (mandatory — from the 2026 post-mortem,
+   `shows/2026-july-4/post-mortem.md`):**
+   - FRESH batteries (or COBRA LiPo / 12 V external) in every module ON
+     show day. Never holdover batteries; never trust idle voltage.
+   - Under-LOAD voltage check per battery (loaded <~7 V on a 9 V = replace).
+   - Live-fire several sacrificial igniters at show pace (rapid sequence
+     + a simultaneous pair on one module) on the actual show batteries
+     during setup-day testing. Budget ~5 spare igniters for this.
 
 ## Placement grouping logic
 

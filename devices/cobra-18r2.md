@@ -147,6 +147,12 @@ end
 
 ## 8. Safety Features & Gotchas
 
+- **Battery reality (owner post-mortem, 2026):** green continuity and a
+  perfect no-load dry-run prove NOTHING about firing energy — weak module
+  batteries pass every test, then sag under show-pace firing load (2026:
+  ~40% scattered no-fires on both stations). Fresh batteries or LiPo/12 V
+  external on show day; check voltage UNDER LOAD; live-fire sacrificial
+  igniters at show pace during setup.
 - **Keyswitches everywhere:** modules only fire with key at ARM; remote requires ARM press. TEST mode is safe-to-handle.
 - **Arming:** press ARM on the 18R2 → ARM LED blinks while each device confirms **and the script downloads into the modules** (~1–2 s per module; fw 7.0+: module ARM LED blinks during download, solid = script loaded; fw 8.0: TEST LED). **Do not fire until the ARM LED is solid** and the armed-device count matches. `A##` shown persistently = that address is off, out of range, or still keyed to TEST.
 - **Disarm/abort:** TEST/DISARM instantly stops all firing (even mid-script). ARM doubles as pause/resume during scripts; after an abort you can re-arm, restart the script, and STEP forward to catch up.
